@@ -7,7 +7,7 @@ function md(s){return esc(s).replace(/\[([^\]]+)\]\(([^)]+)\)/g,function(m,a,b){
 function multi(q){return /mehrere/.test(q.auswahl)}
 function seg(){if(A.q1==='Ich wohne zur Miete')return 'A';var v=A.q4;
  if(v==='Selbst machen und günstig')return 'B';if(v==='Rundum-Service mit Leitstelle')return 'D';return 'C'}
-function intro(){el.innerHTML='<p>'+esc(Q.intro)+'</p><button class="btn" id="go">Check starten</button>';
+function intro(){el.innerHTML='<button class="btn" id="go">'+esc(Q.cta||'Check starten')+'</button>';
  document.getElementById('go').onclick=function(){i=0;step()}}
 function step(){var q=qs[i],sel=A[q.id]||(multi(q)?[]:null);
  var h='<div class="qbar"><i style="width:'+Math.round(i/qs.length*100)+'%"></i></div><div class="qstep">Frage '+(i+1)+' von '+qs.length+'</div><p class="qq">'+esc(q.frage)+'</p>';
