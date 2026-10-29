@@ -1,0 +1,98 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Alarmark · Mockup Startseite</title><style>
+@font-face{font-family:Figtree;font-weight:400;font-display:swap;src:url(assets/fonts/figtree-latin-400-normal.woff2)format("woff2")}
+@font-face{font-family:Figtree;font-weight:600;font-display:swap;src:url(assets/fonts/figtree-latin-600-normal.woff2)format("woff2")}
+@font-face{font-family:Figtree;font-weight:700;font-display:swap;src:url(assets/fonts/figtree-latin-700-normal.woff2)format("woff2")}
+@font-face{font-family:Newsreader;font-style:italic;font-weight:400;font-display:swap;src:url(assets/fonts/newsreader-latin-400-italic.woff2)format("woff2")}
+:root{--n:#0F172A;--m:#7FE3CF;--r:#7C2D12;--o:#F7F7F4;--w:#FFF;--s6:#475569;--s5:#64748B;--s3:#CBD5E1;--s2:#E2E8F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--s2);color:var(--n);font:400 18px/1.55 Figtree,system-ui,sans-serif;padding:40px}
+.stage{display:flex;gap:56px;align-items:flex-start}
+.cap{font-size:14px;font-weight:600;color:var(--s6);margin-bottom:12px}
+.frame{background:var(--o);container-type:inline-size;border-radius:28px;overflow:hidden;box-shadow:0 24px 64px rgba(15,23,42,.12)}
+.mob{width:390px}.desk{width:1440px;zoom:.6}
+.site{--p:24px}.in{padding:0 var(--p)}
+a{color:inherit}:focus-visible{outline:2px solid var(--n);outline-offset:2px}.ft :focus-visible{outline-color:var(--m)}
+.hd{display:flex;align-items:center;justify-content:space-between;height:72px}
+.lg{display:block;height:28px;width:auto;color:var(--n);--bar:var(--m)}
+.btn{display:inline-flex;align-items:center;gap:12px;min-height:56px;padding:0 24px;border:0;border-radius:12px;background:var(--m);color:var(--n);font:600 18px/1.2 Figtree,sans-serif;text-decoration:none;transition:box-shadow .16s}
+.btn:hover{box-shadow:inset 0 0 0 2px var(--n)}
+.btn svg,.lnk svg{width:20px;height:20px;flex:none}
+.gh{min-height:44px;padding:0 16px;font-size:16px;background:none;box-shadow:inset 0 0 0 2px var(--n)}.gh:hover{background:var(--m)}
+.lnk{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-weight:600;text-decoration:underline 2px;text-underline-offset:6px}.lnk:hover{text-decoration-color:var(--r)}
+h1{font-size:38px;line-height:1.08;letter-spacing:-.025em}
+h2{font-size:30px;line-height:1.12;letter-spacing:-.02em;margin-bottom:24px}
+h3{font-size:20px;line-height:1.3;font-weight:600;margin-bottom:8px}
+.ph{position:relative;background:var(--s2);border-radius:20px;overflow:hidden}.ph>img:first-child{display:block;width:100%;height:100%;object-fit:cover}
+.ai{position:absolute;left:12px;bottom:12px;width:32px;height:32px;padding:4px;background:var(--w);border-radius:8px}
+.hero{padding:8px 0 72px}.hero .ph{aspect-ratio:4/3}.hero .ph>img:first-child{object-position:50% 15%}
+.hero h1{margin:28px 0 24px}.lead{margin-top:24px;color:var(--s6)}
+.sec{padding:72px 0;border-top:1px solid var(--s3)}
+.sb>*+*{margin-top:16px}.sb>.btn,.sb>.lnk{margin-top:24px}
+.qs{list-style:none;border-top:2px solid var(--n)}.qs li{padding:14px 0;border-bottom:1px solid var(--s3);font-size:20px;font-weight:600;line-height:1.35}
+.lb{font-size:14px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.bar::before{content:"";display:block;width:40px;height:8px;border-radius:2px;background:var(--n);margin-bottom:16px}
+.tip{background:var(--m);border-radius:16px;padding:24px}.sb>.tip{margin-top:40px}
+.merk{background:var(--n);color:var(--w);border-radius:16px;padding:32px 24px}.merk.bar::before{background:var(--m)}.merk .lb{color:var(--m)}
+.ms{font:italic 400 24px/1.3 Newsreader,Georgia,serif;margin-top:8px}.merk .ms{font-size:30px}
+.trio{display:grid;gap:16px;margin-top:32px}
+.card{display:flex;flex-direction:column;background:var(--w);border:1px solid var(--s3);border-radius:16px;padding:24px}.card>svg{width:32px;height:32px;margin-bottom:20px}.card p{color:var(--s6)}.card .lnk{margin-top:auto;padding-top:16px}
+.note{margin-top:24px;font-weight:600}
+.em{font-weight:600}
+.fine{font-size:16px;color:var(--s6);background:var(--w);border:1px solid var(--s3);border-radius:12px;padding:16px 20px}
+.mk .ph{aspect-ratio:1;margin-bottom:32px}.mk .ph>img:first-child{object-position:50% 20%}
+.qt{font:italic 400 22px/1.45 Newsreader,Georgia,serif}.qt p+p{margin-top:12px}
+.disc{font-size:16px;color:var(--s6)}
+details{border-bottom:1px solid var(--s3)}details:first-of-type{border-top:2px solid var(--n)}
+summary{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:64px;padding:12px 0;font-weight:600;font-size:19px;cursor:pointer;list-style:none}summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-weight:400;font-size:28px;line-height:1}details[open] summary::after{content:"–"}
+details p{padding:0 0 20px;color:var(--s6);max-width:640px}
+.ft{background:var(--n);color:var(--s3);padding:56px 0;font-size:16px}.ft .lg{color:var(--w)}
+.ft nav{display:flex;gap:24px;margin:32px 0 16px}.ft nav a{color:var(--w);min-height:44px;display:inline-flex;align-items:center}
+@container (min-width:1000px){
+.site{--p:120px}h1{font-size:68px}h2{font-size:44px}
+.hd{height:96px}.lg{height:34px}
+.hero{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;align-items:center;padding:24px 0 128px}
+.hero .ph{grid-column:8/13;grid-row:1;aspect-ratio:4/5}.hero .ph>img:first-child{object-position:50% 0}
+.ht{grid-column:1/7;grid-row:1}.hero h1{margin-top:0}.lead{max-width:560px}
+.sec{display:grid;grid-template-columns:repeat(12,1fr);column-gap:24px;padding:128px 0}
+.sec>h2{grid-column:1/6}.sb{grid-column:7/13}.sec>.trio,.sec>.note{grid-column:1/13}
+.trio{grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+.mk .ph{grid-column:1/6;aspect-ratio:4/5;margin:0}.mk .sb{grid-column:7/13;align-self:center}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="lg" viewBox="0 8 230 41"><g fill="currentColor"><path fill-rule="evenodd" d="M.4 48 14 8h4l13.6 40h-5.3l-3.9-11.5H9.6L5.6 48zm10.9-16.5h9.4L16 17.7z"/><path d="M211 33.2 221.1 22h6.8L211 40.8zm2.1-1.5h6L230 48h-6z"/></g><g fill="none" stroke="currentColor" stroke-width="5"><path d="M39 8v40M72 22v26M83 48V22m0 13c0-6.5 4-10.5 12-10.5M178.5 22v26M189.5 48V22m0 13c0-6.5 4-10.5 12-10.5M208.5 8v40"/><circle cx="61" cy="35.5" r="11"/><circle cx="167.5" cy="35.5" r="11"/><path stroke-width="8" d="M103 48V22m0 14c0-6.5 4-10 10.25-10S123.5 29.5 123.5 36v12m0-12c0-6.5 4-10 10.25-10S144 29.5 144 36v12"/></g><rect x="110.5" y="8" width="26" height="6" rx="1" style="fill:var(--bar,#7FE3CF)"/></symbol>
+<symbol id="ar" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="i1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="13" y="3.5" width="5" height="10" rx="2" transform="rotate(45 15.5 8.5)"/><path d="M12 12 4 20"/></symbol>
+<symbol id="i2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V5.5h6V8M3 13h18"/></symbol>
+<symbol id="i3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 14v-2a7 7 0 0 1 14 0v2M18.5 19c0 1.5-2 2.5-5 2.5"/><rect x="3.5" y="13" width="4" height="6" rx="1.5"/><rect x="16.5" y="13" width="4" height="6" rx="1.5"/></symbol>
+</defs></svg>
+<div class="stage"><div><p class="cap">Mobil · 390 px</p><div class="frame mob"></div></div><div><p class="cap">Desktop · 1440 px (auf 60 % verkleinert dargestellt)</p><div class="frame desk"></div></div></div>
+<template id="t"><div class="site">
+<header class="in hd"><a href="/" aria-label="Alarmark Startseite"><svg class="lg" viewBox="0 8 230 41" role="img" aria-label="Alarmark"><use href="#lg"/></svg></a><a class="btn gh" href="#quiz">Alarm-Check</a></header>
+<main class="in">
+<section class="hero"><figure class="ph"><img src="assets/img/mark-hero.webp" alt="Mark, Techniker mit graumeliertem Haar, im hellen Eingangsbereich" width="800" height="1000"><img class="ai" src="assets/ai-label.png" alt="KI-generiert" width="32" height="32"></figure>
+<div class="ht"><h1>Welche Alarmanlage passt zu deinem Zuhause?</h1><a class="btn" href="#quiz">Jetzt Alarm-Check starten<svg aria-hidden="true"><use href="#ar"/></svg></a><p class="lead">Ob Haus oder Wohnung, Selbstmontage oder Fachbetrieb: Finde in nur einer Minute heraus, welche Lösung für dich infrage kommt. Sechs einfache Fragen, eine erste Orientierung – kostenlos und ohne Anmeldung.</p></div></section>
+<section class="sec"><h2>Sechs Fragen. Mehr Klarheit.</h2><div class="sb"><ul class="qs"><li>Was möchtest du absichern?</li><li>Was ist dir besonders wichtig?</li><li>Und wie viel möchtest du selbst übernehmen?</li></ul><p>Unser kurzer Check hilft dir, deine Anforderungen einzuordnen und die passende Art von Alarmanlage zu finden.</p><p>Dein Ergebnis erhältst du direkt – ohne E-Mail-Adresse. Wenn du tiefer einsteigen möchtest, schicken wir dir gerne weitere Informationen.</p><a class="btn" href="#quiz">Meine Möglichkeiten entdecken<svg aria-hidden="true"><use href="#ar"/></svg></a></div></section>
+<section class="sec"><h2>Was kostet eine gute Alarmanlage?</h2><div class="sb"><p>Die Anschaffung ist nur ein Teil der Rechnung. Je nach Lösung kommen Installation, laufende Gebühren oder Wartung hinzu.</p><p>Entscheidend ist deshalb nicht allein der Kaufpreis, sondern was dich die Anlage über mehrere Jahre insgesamt kostet.</p><p>Wir zeigen dir, wie du Angebote fair vergleichst und worauf du achten solltest.</p><a class="lnk" href="/kosten">Kosten richtig vergleichen<svg aria-hidden="true"><use href="#ar"/></svg></a><aside class="tip bar"><p class="lb">Marks Tipp</p><p class="ms">„Kläre zuerst, was deine Alarmanlage leisten soll. Dann lassen sich auch die Preise besser vergleichen.“</p></aside></div></section>
+<section class="sec"><h2>Drei Möglichkeiten. Was passt zu dir?</h2><div class="sb"><p>Es gibt unterschiedliche Wege zur passenden Alarmanlage. Entscheidend ist, wie viel du selbst übernehmen möchtest und welche Betreuung du brauchst.</p></div>
+<div class="trio">
+<article class="card"><svg aria-hidden="true"><use href="#i1"/></svg><h3>Selbst installieren</h3><p>Du möchtest deine Alarmanlage selbst auswählen und einbauen? Wir zeigen dir, welche Voraussetzungen wichtig sind und worauf du achten solltest.</p><a class="lnk" href="/dr">Selbstmontage entdecken<svg aria-hidden="true"><use href="#ar"/></svg></a></article>
+<article class="card"><svg aria-hidden="true"><use href="#i2"/></svg><h3>Vom Fachbetrieb installieren lassen</h3><p>Du möchtest Planung und Einbau lieber Profis überlassen? Erfahre, welche Leistungen ein Fachbetrieb übernehmen kann und welche Fragen du stellen solltest.</p><a class="lnk" href="/dr">Fachbetrieb kennenlernen<svg aria-hidden="true"><use href="#ar"/></svg></a></article>
+<article class="card"><svg aria-hidden="true"><use href="#i3"/></svg><h3>Mit professioneller Leitstelle</h3><p>Du möchtest, dass sich im Alarmfall nicht alles um deine eigene Erreichbarkeit dreht? Erfahre, wie eine Leitstelle funktioniert und welche Leistungen dazugehören können.</p><a class="lnk" href="/dr">Leitstellenlösungen verstehen<svg aria-hidden="true"><use href="#ar"/></svg></a></article>
+</div><p class="note">Du wohnst zur Miete? Auch für Wohnungen gibt es verschiedene Möglichkeiten.</p></section>
+<section class="sec"><h2>Nach einer Minute bist du einen Schritt weiter.</h2><div class="sb"><p>Du erhältst eine erste Einschätzung, welche Alarmanlagenlösung zu deinen Anforderungen passen könnte – mit verständlichen Informationen zu den nächsten Schritten.</p><p>Möchtest du mehr erfahren, kannst du dir zusätzliche Tipps per E-Mail schicken lassen oder freiwillig eine Anfrage an einen Fachbetrieb stellen.</p><p class="em">Du entscheidest, wie es weitergeht.</p><p class="fine">Der Check ist kostenlos. Eine Weitergabe deiner Anfrage erfolgt nur mit deiner gesonderten Einwilligung. Alarmark kann dafür eine Vergütung vom Fachbetrieb erhalten.</p></div></section>
+<section class="sec mk"><figure class="ph"><img src="assets/img/mark-portrait.webp" alt="Mark zeigt im Eingangsbereich auf eine Haustür" width="800" height="1000" loading="lazy"><img class="ai" src="assets/ai-label.png" alt="KI-generiert" width="32" height="32" loading="lazy"></figure>
+<div class="sb"><h2>Frag Mark. Er erklärt’s dir.</h2><blockquote class="qt"><p>„Ich bin Mark, die KI-Figur von Alarmark. Ich erkläre dir, wie Alarmanlagen funktionieren, worauf es bei der Auswahl ankommt und welche Unterschiede wirklich wichtig sind.</p><p>Ohne Fachchinesisch, ohne Angstmache. Dafür mit praktischen Tipps, die dir bei deiner Entscheidung helfen.“</p></blockquote><aside class="merk bar"><p class="lb">Marks Merksatz</p><p class="ms">Erst verstehen, dann entscheiden.</p></aside><p class="disc">Mark vermittelt allgemeines Wissen über Alarmanlagen und Einbruchschutz. Seine Inhalte ersetzen keine individuelle Sicherheitsberatung.</p></div></section>
+<section class="sec"><h2>Häufige Fragen</h2><div class="sb">
+<details><summary>Welche Alarmanlage passt zu mir?</summary><p>Das hängt von deiner Wohnsituation und deinen Wünschen ab. Möchtest du selbst installieren oder lieber einen Fachbetrieb beauftragen? Reicht dir eine Benachrichtigung oder möchtest du eine Leitstellenanbindung? Unser 1-Minuten-Check hilft dir bei der ersten Orientierung.</p></details>
+<details><summary>Mit welchen Kosten muss ich rechnen?</summary><p>Neben der Alarmanlage selbst können Kosten für Installation, Wartung und laufende Leistungen entstehen. Wir zeigen dir, wie du diese Kosten über fünf Jahre vergleichen kannst, damit du Angebote besser einschätzen kannst.</p></details>
+<details><summary>Muss ich meine E-Mail-Adresse angeben?</summary><p>Nein. Dein Check-Ergebnis erhältst du ohne Anmeldung. Nur wenn du weitere Informationen per E-Mail möchtest, benötigen wir deine Adresse. Ob deine Anfrage an einen Fachbetrieb weitergegeben werden darf, entscheidest du separat.</p></details>
+<details><summary>Ist der Alarm-Check wirklich kostenlos?</summary><p>Ja. Der Check und die optionalen Informationen per E-Mail sind kostenlos. Wenn du möchtest, kannst du zusätzlich Kontakt zu einem Fachbetrieb anfragen. Alarmark kann für die Vermittlung eine Vergütung erhalten. Für dich entsteht dadurch keine Verpflichtung zum Kauf.</p></details>
+</div></section>
+</main>
+<footer class="ft"><div class="in"><svg class="lg" viewBox="0 8 230 41" role="img" aria-label="Alarmark"><use href="#lg"/></svg><nav aria-label="Rechtliches"><a href="/impressum">Impressum</a><a href="/datenschutz">Datenschutz</a><a href="#quellen">Quellen</a></nav><p>Mark ist eine KI-Figur von Alarmark.</p><p>© 2026 Alarmark</p></div></footer>
+</div></template>
+<script>for(const f of document.querySelectorAll('.frame'))f.append(document.getElementById('t').content.cloneNode(true))</script>
+</body></html>
