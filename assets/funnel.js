@@ -4,8 +4,8 @@
 (function(){
 var F=window.FN,el=document.getElementById('check');if(!F||!el)return;
 var M=F.mode,A={},hist=[],t0=Date.now(),url=new URLSearchParams(location.search);
-var WEG=(url.get('weg')||'').toUpperCase(),U=url.get('u')||'';if(!/^(SE|SL|PE|PL)$/.test(WEG))WEG='';if(!/^[123]$/.test(U)||!WEG)U='';
-if(M!=='kosten'){WEG='';U=''}var WEG0=WEG,U0=U,REG=null,PLZ_ON=M==='alarm'&&!!F.plzdata&&!!F.plz,plzDone=false;
+var WEG=(url.get('weg')||'').toUpperCase(),U=url.get('u')||'',WF=url.get('wf')||'';if(!/^(SE|SL|PE|PL)$/.test(WEG))WEG='';if(!/^[123]$/.test(U)||!/^[hw]$/.test(WF)||!WEG){U='';WF=''}
+if(M!=='kosten'){WEG='';U='';WF=''}var WEG0=WEG,U0=U,WF0=WF,REG=null,PLZ_ON=M==='alarm'&&!!F.plzdata&&!!F.plz,plzDone=false;
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function has(){for(var i=0;i<arguments.length;i++)for(var k in A)if(A[k]===arguments[i])return true;return false}
 function lab(qid){if(qid==='a2')return lab('a2h')||lab('a2w');var q=F.questions.filter(function(x){return x.id===qid})[0];if(!q||!A[qid])return '';var o=q.optionen.filter(function(x){return x.id===A[qid]})[0];return o?o.label:''}
@@ -17,6 +17,7 @@ function score(reg){var s={S:0,P:0,E:0,L:0};list().forEach(function(q){q.optione
 function decide(){if(WEG)return {m:WEG[0],a:WEG[1],tie:false,region:false};
  var s=score(true),s0=score(false),I=s.S-s.P,I0=s0.S-s0.P,D=s.L-s.E,m=I>=1?'S':I<=-1?'P':(F.tie.S.indexOf(A[F.tie.q])>-1?'S':'P');
  return {m:m,a:D>=1?'L':'E',tie:D===0,region:!!(REG&&REG.elev&&I0>=1&&I<=0)}}
+function wf(){return WF||(has('a1c','a1d')?'w':'h')}
 function scope(){if(U)return +U;var w=A.a2w,h=A.a2h,o=A.a3;
  if(w==='a2w2'||w==='a2w3')return 1;if(w==='a2w1')return o==='a3d'?3:2;if(h==='a2h1')return o==='a3d'?3:2;if(h==='a2h2')return (o==='a3a'||o==='a3b')?2:3;if(h==='a2h3')return 3;return 2}
 function fill(t){return t.replace(/\{(\w+)\}/g,function(_,k){return lab(k)})}
@@ -37,7 +38,7 @@ function step(scroll){var qs=list(),i=hist.length;if(i>=qs.length){if(PLZ_ON&&!p
  var bk=document.getElementById('bk');if(bk)bk.onclick=function(){var id=hist.pop();delete A[id];step(true)};
  bindChg();if(scroll)el.scrollIntoView({block:'start',behavior:'smooth'})}
 function kopf(){return '<p class="small">'+esc(F.kosten.kopf)+': <strong>'+esc(F.weg_titel[WEG])+'</strong> · <button class="lnk" id="chg" type="button">'+esc(F.kosten.aendern)+'</button></p>'}
-function bindChg(){var ch=document.getElementById('chg');if(ch)ch.onclick=function(){WEG='';U='';hist=[];A={};step(true)}}
+function bindChg(){var ch=document.getElementById('chg');if(ch)ch.onclick=function(){WEG='';U='';WF='';hist=[];A={};step(true)}}
 function plzStep(n){var P=F.plz,N=n+1;
  el.innerHTML='<div class="qbar"><i style="width:'+Math.round(n/N*100)+'%"></i></div><div class="qstep"><span class="small">Frage '+N+' von '+N+'</span><p class="qq">'+esc(P.ueberschrift)+'</p><label for="plz">'+esc(P.eingabe_label)+'</label><input id="plz" type="text" inputmode="numeric" maxlength="5" autocomplete="postal-code"><p class="small">'+esc(P.eingabe_hinweis)+'</p><p><button class="btn" type="button" id="plzb">Ergebnis anzeigen</button></p><div id="plzr" aria-live="polite"></div></div><div class="qnav"><button class="lnk" id="bk" type="button">Zurück</button></div>';
  var inp=document.getElementById('plz'),b=document.getElementById('plzb'),o=document.getElementById('plzr');
@@ -52,36 +53,36 @@ function regBox(){if(!REG)return '';var P=F.plz,D=F.plzdata,ks=REG.ks,fmt=functi
  var k=D.kreis[ks[0]],r=k.hz/D.bund,t=(r<0.85?P.unter:r>1.15?P.ueber:P.um).replace('{kreis}',k.n).replace('{hz_kreis}',fmt(k.hz)).replace('{hz_bund}',fmt(D.bund));
  if(ks.length>1)t=P.zwei_kreise.replace('{kreis_1}',k.n)+' '+t;
  return '<div class="plz"><p><strong>'+esc(P.ueberschrift)+'</strong></p><p>'+esc(t)+'</p><p class="small">'+esc(P.grenze)+'</p><p class="small">'+esc(P.quellenzeile.replace('{pks_version}',D.version||''))+'</p></div>'}
-function hints(d){var h=[];if(has('a1b','a1d'))h.push(F.hints.miete);if(d.m==='P'&&has('a1c','a1d'))h.push(F.hints.wohnung_preis);if(d.tie)h.push(F.hints.ls);return h.slice(0,REG?2:3)}
-function costRow(id,u){var r=F.kosten.rows[id]||{};return r['U'+u]||''}
+function hints(d){var h=[];if(has('a1b','a1d'))h.push(F.hints.miete);if(d.tie)h.push(F.hints.ls);return h.slice(0,REG?2:3)}
+function costRow(id,u){var r=(F.kosten.rows[id]||{})['U'+u];if(!r)return null;var w=wf();return {an:r.an[w],fj:r.fj[w],q:r.q}}
 function ul(a){return a.length?'<ul>'+a.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>':''}
 function result(){var d=decide(),id=d.m+d.a,u=scope();send({stage:'result',quiz:M,result:id,u:u});
  var h=M==='alarm'?alarmRes(d,id,u):kostenRes(d,id,u);
  if(F.mail_on)h+=mailBox();
  h+='<p><button class="lnk" type="button" id="rs">Neu starten</button></p>';
  el.innerHTML=h;el.scrollIntoView({block:'start'});bindChg();
- document.getElementById('rs').onclick=function(){A={};hist=[];REG=null;plzDone=false;WEG=WEG0;U=U0;if(M==='kosten'&&WEG&&U)result();else step(true)};
+ document.getElementById('rs').onclick=function(){A={};hist=[];REG=null;plzDone=false;WEG=WEG0;U=U0;WF=WF0;if(M==='kosten'&&WEG&&U)result();else step(true)};
  if(F.mail_on)bindMail(id)}
 function alarmRes(d,id,u){var r=F.results[id];
  var t=(d.m==='S'&&A.a4==='a4c')||(d.m==='P'&&has('a4a','a4b'))?r.trotz:r.standard;if(d.region)t+=' '+r.region;
  var h='<div class="res"><span class="tag">Dein Ergebnis</span><h3>'+esc(r.titel)+'</h3><p>'+esc(fill(t))+'</p>';
  h+='<p><strong>Deine Ausstattung</strong> <span class="small">('+esc(lab('a2'))+' · '+esc(lab('a3'))+')</span></p>'+ul(equip(d));
- var c=costRow(id,u);if(c)h+='<p><strong>Deine Kosten über fünf Jahre (vorläufig):</strong> '+esc(c)+'</p>';
+ var c=costRow(id,u);if(c)h+='<p><strong>Deine Kosten</strong></p><ul><li>Anschaffung: '+esc(c.an)+'</li><li>Über fünf Jahre: '+esc(c.fj)+'</li></ul>';
  h+='<p><strong>Gut zu wissen:</strong> '+esc(r.erkenntnis)+'</p>';
  var pp=[r.pp,F.pp_u[u],F.pp_b[A.a6]].filter(Boolean).slice(0,3);h+='<p><strong>Deine Prüfpunkte</strong></p>'+ul(pp);
  var hs=hints(d);if(hs.length)h+='<p><strong>Hinweise</strong></p>'+ul(hs);
  h+=regBox();
  h+='<p class="small">Quelle: '+esc(r.quelle)+'</p>';
  h+='<details class="small"><summary>So kommen wir darauf</summary><p>'+esc(F.transparenz.replace(/^So kommen wir darauf:\s*/,''))+'</p></details>';
- h+='<p><a class="btn" href="'+F.base+'/alarmanlage-haus-kosten/?weg='+id+'&u='+u+'">'+esc(F.next_button)+'</a></p></div>';
+ h+='<p><a class="btn" href="'+F.base+'/alarmanlage-haus-kosten/?weg='+id+'&u='+u+'&wf='+wf()+'">'+esc(F.next_button)+'</a></p></div>';
  return h}
-function kostenRes(d,id,u){var K=F.kosten,r=K.results[id],rw=K.rows[id]||{},alt=id[0]+(id[1]==='E'?'L':'E');
- var h=(WEG?kopf():'')+'<div class="res"><span class="tag">Dein Ergebnis</span><h3>'+esc(r.titel)+'</h3>';
- h+='<p><strong>Über fünf Jahre (vorläufig):</strong> '+esc(costRow(id,u))+'</p>';if(rw.laufend)h+='<p class="small">Davon laufend: '+esc(rw.laufend)+'</p>';
- if(d.m==='P'&&has('a1c','a1d'))h+='<p class="small">'+esc(F.hints.wohnung_preis)+'</p>';
- h+='<p class="small">Zum Vergleich – '+esc(F.weg_titel[alt])+': '+esc(costRow(alt,u))+'</p>';
+function kostenRes(d,id,u){var K=F.kosten,r=K.results[id],rw=K.rows[id]||{},alt=id[0]+(id[1]==='E'?'L':'E'),c=costRow(id,u),ca=costRow(alt,u);
+ var b=(A.a4&&A.a5?fill('Du hast gesagt: „{a4}“ und „{a5}“. '):'')+K.begr[id].replace('{Umfangstext}',K.umfangstext['U'+u]);
+ var h=(WEG?kopf():'')+'<div class="res"><span class="tag">Dein Ergebnis</span><h3>'+esc(r.titel)+'</h3><p>'+esc(b)+'</p>';
+ h+='<ul><li>Anschaffung: '+esc(c.an)+'</li><li><strong>Über fünf Jahre: '+esc(c.fj)+'</strong></li></ul>';if(rw.laufend)h+='<p class="small">Davon laufend: '+esc(rw.laufend)+'</p>';
+ h+='<p class="small">Zum Vergleich – '+esc(F.weg_titel[alt])+': '+esc(ca.fj)+'</p>';
  h+='<p><strong>Gut zu wissen:</strong> '+esc(r.erkenntnis)+'</p><p><strong>Deine Prüfpunkte</strong></p>'+ul(r.pruefpunkte);
- h+='<p class="small">Quelle: '+esc(r.quelle)+'</p><details class="small"><summary>So rechnen wir</summary><p>'+esc(K.transparenz.replace(/^So rechnen wir:\s*/,''))+'</p></details></div>';
+ h+='<p class="small">Quelle: '+esc(r.quelle)+'; '+esc(c.q)+'</p><details class="small"><summary>So rechnen wir</summary><p>'+esc(K.transparenz.replace(/^So rechnen wir:\s*/,''))+'</p></details></div>';
  if(!WEG0)h+='<p class="small">'+esc(K.region_hinweis)+'.</p><p><a class="btn" href="'+F.base+'/#check">Jetzt Alarm-Check starten</a></p>';
  return h}
 function mailBox(){var E=F.email;return '<form class="mail" id="mf" novalidate><p><strong>'+esc(E.h||'')+'</strong></p><label for="em"><strong>'+esc(E.feld_email)+'</strong></label><input id="em" type="email" autocomplete="email" inputmode="email" required>'+
