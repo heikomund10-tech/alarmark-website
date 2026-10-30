@@ -109,17 +109,21 @@ function pdfBox(){var T=RT();return '<div class="plz" id="pdfb"><p><strong>'+esc
 function load(src){return new Promise(function(ok,no){if(window.jspdf)return ok();var s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
 function bindPdf(){var b=document.getElementById('pdfg');if(!b)return;b.onclick=function(){b.disabled=true;
  Promise.all([fetch(F.reportdata).then(function(r){return r.json()}),load(F.jspdf)]).then(function(x){makePdf(x[0]);b.disabled=false}).catch(function(){b.disabled=false;document.getElementById('pdfe').textContent='Der Report konnte gerade nicht erstellt werden. Bitte versuch es gleich noch einmal.'})}}
-function makePdf(R){var T=RT(),k=REG?R.kreis[REG.ks[0]]:null,doc=new window.jspdf.jsPDF({unit:'mm',format:'a4'}),y=20,W=170,fmt=function(n){return (Math.round(n*10)/10).toFixed(1).replace('.',',').replace(/\B(?=(\d{3})+(?!\d)\,)/g,'.')};
+function makePdf(R){var T=RT(),k=REG?R.kreis[REG.ks[0]]:null,doc=new window.jspdf.jsPDF({unit:'mm',format:'a4'}),y=20,W=170,SP=T.spalten||['Delikt','Erfasste Fälle 2025','Häufigkeitszahl (je 100.000 Einwohner)','Rang deines Kreises (von '+R.n+')','Bundesschnitt (Häufigkeitszahl)'],
+ fmt=function(n){var q=(Math.round(n*10)/10).toFixed(1).split('.');return q[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+q[1]},int=function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'.')};
  function txt(s,size,bold){doc.setFont('helvetica',bold?'bold':'normal');doc.setFontSize(size);var l=doc.splitTextToSize(String(s||''),W);if(y+l.length*size*0.45>280){doc.addPage();y=20}doc.text(l,20,y);y+=l.length*size*0.45+3}
- txt(k?T.titel:(T.titel_deutschland_only||T.titel),16,true);if(k)txt('Dein Kreis: '+k[0],11,false);
+ txt(k?T.titel:(T.titel_deutschland_only||T.titel),16,true);if(k)txt('Dein Kreis: '+k[0],11,true);
  if(T.einleitung)txt(T.einleitung,10);if(T.lesehilfe)txt(T.lesehilfe,10);
- y+=2;doc.setFontSize(9);doc.setFont('helvetica','bold');var cx=[20,95,130,160];
- doc.text('Delikt',cx[0],y);doc.text('Deutschland',cx[1],y);if(k){doc.text('Dein Kreis',cx[2],y);doc.text('Platz (von '+R.n+')',cx[3],y)}y+=2;doc.line(20,y,190,y);y+=5;doc.setFont('helvetica','normal');
- R.delikte.forEach(function(n,i){doc.text(n,cx[0],y);doc.text(fmt(R.bund[i]),cx[1],y);if(k){doc.text(fmt(k[i+1][0]),cx[2],y);doc.text(String(k[i+1][1]),cx[3],y)}y+=6});
- doc.setFontSize(8);doc.text('Fälle je 100.000 Einwohner. Platz 1 = höchster Wert unter allen Kreisen.',20,y);y+=8;
- if(T.kleine_fallzahlen)txt(T.kleine_fallzahlen,9);txt(T.grenzen||F.plz.grenze,9);
- if(!k&&T.hinweis_deutschland_only)txt(T.hinweis_deutschland_only,9);
- txt('Quelle: Polizeiliche Kriminalstatistik, Bundeskriminalamt, Berichtsjahr 2025, Version '+R.version+', Datenlizenz Deutschland – Namensnennung 2.0.'+(k?' PLZ-Zuordnung: OpenPLZ auf Basis von OpenStreetMap, © OpenStreetMap-Mitwirkende, ODbL.':''),8);
+ /* region: Delikt | Fälle | HZ | Rang | Bundesschnitt ; Germany only: Delikt | Bundesschnitt (CD columns, 30.10.2026) */
+ var cols=k?[[20,52,SP[0]],[74,24,SP[1]],[100,30,SP[2]],[132,28,SP[3]],[162,28,SP[4]]]:[[20,90,SP[0]],[120,50,SP[4]]];
+ y+=2;doc.setFontSize(8);doc.setFont('helvetica','bold');var hh=0;cols.forEach(function(c){var l=doc.splitTextToSize(c[2],c[1]-2);doc.text(l,c[0],y);hh=Math.max(hh,l.length)});y+=hh*3.4;doc.line(20,y,190,y);y+=5;
+ doc.setFont('helvetica','normal');doc.setFontSize(9);var low=false;
+ R.delikte.forEach(function(n,i){var r=k&&k[i+1],hide=r&&r[2]<(R.min_faelle_rang||0);if(hide)low=true;
+  var v=k?[n,int(r[2]),fmt(r[0]),hide?'–':String(r[1]),fmt(R.bund[i])]:[n,fmt(R.bund[i])];
+  cols.forEach(function(c,j){doc.text(doc.splitTextToSize(v[j],c[1]-2),c[0],y)});y+=6});
+ y+=2;if(k&&low&&T.kleine_fallzahlen)txt(T.kleine_fallzahlen,9);txt(T.grenzen||F.plz.grenze,9);
+ if(!k&&T.deutschland_satz)txt(T.deutschland_satz,9);
+ txt(T.quellenzeile?(k?T.quellenzeile:T.quellenzeile.replace(/\s*PLZ-Zuordnung:.*$/,'')):'Quelle: Polizeiliche Kriminalstatistik, Bundeskriminalamt, Berichtsjahr 2025, Version '+R.version+', Datenlizenz Deutschland – Namensnennung 2.0.',8);
  txt('Alarmark · mark@alarmark.de · Mark ist eine KI-Figur von Alarmark.',8);
  doc.save('Alarmark-Report'+(k?'-'+k[0].replace(/[^A-Za-z0-9ÄÖÜäöüß-]+/g,'-'):'-Deutschland')+'.pdf')}
 function mailBox(){var E=F.email;return '<form class="mail" id="mf" novalidate><p><strong>'+esc(E.h||'')+'</strong></p><label for="em"><strong>'+esc(E.feld_email)+'</strong></label><input id="em" type="email" autocomplete="email" inputmode="email" required>'+
