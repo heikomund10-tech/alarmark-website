@@ -3,7 +3,8 @@ var Q=window.QZ,el=document.getElementById('check');if(!Q||!el)return;
 var qs=Q.questions.filter(function(q){return q.optionen&&q.optionen.length});
 var A={},i=-1,t0=Date.now();
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-function md(s){return esc(s).replace(/\[([^\]]+)\]\(([^)]+)\)/g,function(m,a,b){return '<a href="'+(b.charAt(0)=='/'?Q.base+b:b)+'">'+a+'</a>'})}
+function live(b){return b.charAt(0)!='/'||!Q.pages||Q.pages.indexOf(b.split('#')[0].split('?')[0])>-1}
+function md(s){return esc(s).replace(/\[([^\]]+)\]\(([^)]+)\)/g,function(m,a,b){return live(b)?'<a href="'+(b.charAt(0)=='/'?Q.base+b:b)+'">'+a+'</a>':a})}
 function multi(q){return /mehrere/.test(q.auswahl)}
 function seg(){if(A.q1==='Ich wohne zur Miete')return 'A';var v=A.q4;
  if(v==='Selbst machen und günstig')return 'B';if(v==='Rundum-Service mit Leitstelle')return 'D';return 'C'}
@@ -30,7 +31,7 @@ function hints(){var s=A.q3||[],h=[];var rules=Q.results; // hint lines are fixe
  if(s.indexOf('Noch nichts')>-1)h.push('Die Polizei rät: erst Mechanik, dann Technik. Mehr dazu: [RC 2 bei Tür und Fenster](/einbruchschutz-tuer-fenster-rc2/)');
  return h}
 function result(){var S=seg(),r=Q.results[S],E=Q.email;send({stage:'result'});
- var h='<div class="res"><span class="tag">Dein Ergebnis</span><h3>'+esc(r.titel)+'</h3><p>'+esc(r.text)+'</p><p><a class="btn" href="'+Q.base+r.link+'">Zu deinem Weg</a></p>';
+ var h='<div class="res"><span class="tag">Dein Ergebnis</span><h3>'+esc(r.titel)+'</h3><p>'+esc(r.text)+'</p>'+(r.link&&live(r.link)?'<p><a class="btn" href="'+Q.base+r.link+'">Zu deinem Weg</a></p>':'');
  hints().forEach(function(x){h+='<p class="small">'+md(x)+'</p>'});
  h+='</div><form class="mail" id="mf" novalidate><p>'+esc(E.text)+'</p><label for="em"><strong>'+esc(E.feld_email)+'</strong></label><input id="em" type="email" autocomplete="email" inputmode="email" required>'+
  '<label class="chk"><input type="checkbox" id="c1"><span>'+md(E.einwilligung_vertiefung.text)+'</span></label>'+
