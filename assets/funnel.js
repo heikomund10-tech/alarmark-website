@@ -115,12 +115,13 @@ function makePdf(R){var T=RT(),k=REG?R.kreis[REG.ks[0]]:null,doc=new window.jspd
  txt(k?T.titel:(T.titel_deutschland_only||T.titel),16,true);if(k)txt('Dein Kreis: '+k[0],11,true);
  if(T.einleitung)txt(T.einleitung,10);if(T.lesehilfe)txt(T.lesehilfe,10);
  /* region: Delikt | Fälle | HZ | Rang | Bundesschnitt ; Germany only: Delikt | Bundesschnitt (CD columns, 30.10.2026) */
- var cols=k?[[20,52,SP[0]],[74,24,SP[1]],[100,30,SP[2]],[132,28,SP[3]],[162,28,SP[4]]]:[[20,90,SP[0]],[120,50,SP[4]]];
+ var cols=k?[[20,62,SP[0]],[84,36,SP[2]],[122,34,SP[3]],[158,32,SP[4]]]:[[20,90,SP[0]],[120,50,SP[4]]];  /* Heiko 30.10.2026: no case-count column */
  y+=2;doc.setFontSize(8);doc.setFont('helvetica','bold');var hh=0;cols.forEach(function(c){var l=doc.splitTextToSize(c[2],c[1]-2);doc.text(l,c[0],y);hh=Math.max(hh,l.length)});y+=hh*3.4;doc.line(20,y,190,y);y+=5;
  doc.setFont('helvetica','normal');doc.setFontSize(9);var low=false;
  R.delikte.forEach(function(n,i){var r=k&&k[i+1],hide=r&&r[2]<(R.min_faelle_rang||0);if(hide)low=true;
-  var v=k?[n,int(r[2]),fmt(r[0]),hide?'–':String(r[1]),fmt(R.bund[i])]:[n,fmt(R.bund[i])];
-  cols.forEach(function(c,j){doc.text(doc.splitTextToSize(v[j],c[1]-2),c[0],y)});y+=6});
+  var v=k?[n,fmt(r[0]),hide?'–':String(r[1]),fmt(R.bund[i])]:[n,fmt(R.bund[i])];
+  if(i===0){doc.setFont('helvetica','bold');doc.setTextColor(169,78,45)}  /* burglary row highlighted, styleguide --act #A94E2D (Heiko 30.10.2026) */
+  cols.forEach(function(c,j){doc.text(doc.splitTextToSize(v[j],c[1]-2),c[0],y)});y+=6;if(i===0){doc.setFont('helvetica','normal');doc.setTextColor(0,0,0)}});
  y+=2;if(k&&low&&T.kleine_fallzahlen)txt(T.kleine_fallzahlen,9);txt(T.grenzen||F.plz.grenze,9);
  if(!k&&T.deutschland_satz)txt(T.deutschland_satz,9);
  txt(T.quellenzeile?(k?T.quellenzeile:T.quellenzeile.replace(/\s*PLZ-Zuordnung:.*$/,'')):'Quelle: Polizeiliche Kriminalstatistik, Bundeskriminalamt, Berichtsjahr 2025, Version '+R.version+', Datenlizenz Deutschland – Namensnennung 2.0.',8);
