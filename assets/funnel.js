@@ -56,9 +56,11 @@ function bindMail(id){var f=document.getElementById('mf');f.onsubmit=function(e)
  send({stage:'lead',quiz:M,result:id,email:em,consent_mail:true,consent_forward:false,plz:'',consent_text_mail:F.email.label+' '+F.email.detail,consent_text_forward:'',hp:document.getElementById('hp').value},function(ok){
   if(ok)f.innerHTML='<p><strong>Fast geschafft.</strong> '+esc(F.danke)+'</p>';else{b.disabled=false;b.textContent=C.next.mail_btn;er.textContent='Das hat leider nicht geklappt. Bitte versuch es gleich noch einmal.'}})}}
 function plzBox(){var P=C.plz;return '<div class="plz"><p><strong>'+esc(P.ueberschrift)+'</strong></p><label for="plz">'+esc(P.eingabe_label)+'</label><input id="plz" type="text" inputmode="numeric" maxlength="5" autocomplete="postal-code"><p class="small">'+esc(P.eingabe_hinweis)+'</p><p><button class="lnk" type="button" id="plzb">'+esc(P.button)+'</button></p><div id="plzr" aria-live="polite"></div></div>'}
-function bindPlz(){var b=document.getElementById('plzb');if(!b)return;b.onclick=function(){var P=C.plz,D=F.plzdata,v=document.getElementById('plz').value.trim(),o=document.getElementById('plzr'),ks=D.plz[v];
+function bindPlz(){var b=document.getElementById('plzb');if(!b)return;var inp=document.getElementById('plz');inp.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();b.click()}};
+ b.onclick=function(){var o=document.getElementById('plzr');if(typeof F.plzdata==='string'){b.disabled=true;fetch(F.plzdata).then(function(r){return r.json()}).then(function(d){F.plzdata=d;b.disabled=false;b.click()}).catch(function(){b.disabled=false;o.innerHTML='<p>Die Regionaldaten konnten gerade nicht geladen werden. Bitte versuch es gleich noch einmal.</p>'});return}
+ var P=C.plz,D=F.plzdata,v=inp.value.trim(),ks=D.plz[v];
  if(!/^\d{5}$/.test(v)||!ks){o.innerHTML='<p>'+esc(P.unbekannt)+'</p>';return}
- var fmt=function(n){return String(Math.round(n*10)/10).replace('.',',')},t;
+ var fmt=function(n){return (Math.round(n*10)/10).toFixed(1).replace('.',',')},t;
  if(ks.length>1){var a=D.kreis[ks[0]],c=D.kreis[ks[1]];t=P.zwei_kreise.replace('{kreis_1}',a.n).replace('{hz_1}',fmt(a.hz)).replace('{kreis_2}',c.n).replace('{hz_2}',fmt(c.hz))}
  else{var k=D.kreis[ks[0]],r=k.hz/D.bund;t=(r<0.85?P.unter:r>1.15?P.ueber:P.um).replace('{kreis}',k.n).replace('{hz_kreis}',fmt(k.hz))}
  o.innerHTML='<p>'+esc(t.replace('{hz_bund}',fmt(D.bund)))+'</p><p class="small">'+esc(P.grenze)+'</p><p class="small">'+esc(P.quellenzeile.replace('{pks_version}',D.version||''))+'</p>'}}
