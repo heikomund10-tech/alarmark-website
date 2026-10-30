@@ -34,10 +34,10 @@ function result(){var S=seg(),r=Q.results[S],E=Q.email;send({stage:'result'});
  var h='<div class="res"><span class="tag">Dein Ergebnis</span><h3>'+esc(r.titel)+'</h3><p>'+esc(r.text)+'</p>'+(r.link&&live(r.link)?'<p><a class="btn" href="'+Q.base+r.link+'">Zu deinem Weg</a></p>':'');
  hints().forEach(function(x){h+='<p class="small">'+md(x)+'</p>'});
  h+='</div><form class="mail" id="mf" novalidate><p>'+esc(E.text)+'</p><label for="em"><strong>'+esc(E.feld_email)+'</strong></label><input id="em" type="email" autocomplete="email" inputmode="email" required>'+
- '<label class="chk"><input type="checkbox" id="c1"><span>'+md(E.einwilligung_vertiefung.text)+'</span></label>'+
+ '<label class="chk"><input type="checkbox" id="c1"><span>'+md(E.einwilligung_vertiefung.label||E.einwilligung_vertiefung.text)+'</span></label>'+(E.einwilligung_vertiefung.detail?'<p class="small">'+md(E.einwilligung_vertiefung.detail)+'</p>':'')+
  (E.einwilligung_weitergabe?'<label class="chk"><input type="checkbox" id="c2"><span>'+md(E.einwilligung_weitergabe.text)+'</span></label>'+
  '<div id="plzw" hidden><label for="plz">Postleitzahl (freiwillig)</label><input id="plz" type="text" inputmode="numeric" maxlength="5" pattern="[0-9]{5}" autocomplete="postal-code"></div>':'')+
- '<input class="hp" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true"><p class="err" id="er"></p><button class="btn" type="submit">Vertiefung anfordern</button>'+
+ '<input class="hp" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"><p class="err" id="er"></p><button class="btn" type="submit">Vertiefung anfordern</button>'+
  ' <button class="lnk" type="button" id="rs">Check neu starten</button></form>';
  el.innerHTML=h;el.scrollIntoView({block:'start'});
  var c2=document.getElementById('c2')||{checked:false};if(c2.id)c2.onchange=function(){document.getElementById('plzw').hidden=!c2.checked};
