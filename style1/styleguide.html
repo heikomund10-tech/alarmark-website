@@ -1,0 +1,83 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Alarmark – Styleguide v1 (zur Abnahme)</title><style>
+@font-face{font-family:"IBM Plex Sans";font-weight:400;font-display:swap;src:url(../assets/fonts/ibm-plex-sans-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Sans";font-weight:500;font-display:swap;src:url(../assets/fonts/ibm-plex-sans-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"IBM Plex Sans";font-weight:600;font-display:swap;src:url(../assets/fonts/ibm-plex-sans-latin-600-normal.woff2) format("woff2")}
+:root{--slate:#172E38;--char:#263238;--copper:#C66A45;--sage:#8A9C96;--sage7:#73857F;--ivory:#F5F2EB;--line:#DDE2DE;--act:#A94E2D;--act-h:#913F23;--act-p:#81351E;--dis:#B9CAC3;--focus:#155EEF;--err:#B42318;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:64px;--s9:96px;--r1:8px;--r2:16px;--e:cubic-bezier(.2,.8,.2,1)}
+*{box-sizing:border-box}body{margin:0;font:400 1rem/1.55 "IBM Plex Sans",system-ui,sans-serif;color:var(--slate);background:var(--ivory)}button,input{font:inherit;color:inherit}img{display:block;max-width:100%}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 var(--s5);border:0;border-radius:var(--r1);background:var(--act);color:#fff;font-weight:500;font-size:1.0625rem;text-decoration:none;cursor:pointer;transition:background-color .15s var(--e),transform .12s var(--e)}
+.btn:active,.btn.p{background:var(--act-p);transform:scale(.98)}.btn:disabled{background:var(--dis);color:var(--slate);cursor:not-allowed;transform:none}.btn.h{background:var(--act-h)}.btn.f{outline:3px solid var(--focus);outline-offset:3px}
+.lnk{min-height:44px;padding:0;border:0;background:none;color:var(--act);font-weight:500;text-decoration:underline;text-underline-offset:.3em;cursor:pointer}
+@media(hover:hover){.btn:hover{background:var(--act-h)}.opt:hover{border-color:var(--slate)}}
+.quiz,.tile,.tip{background:#fff;border-radius:var(--r2);padding:var(--s5)}
+.qbar{height:4px;border-radius:2px;background:var(--line);margin-bottom:var(--s5);overflow:hidden}.qbar>i{display:block;height:100%;background:var(--copper);transition:width .2s var(--e)}
+.qstep{display:grid;gap:var(--s3)}.qq{font-size:1.25rem;font-weight:600;line-height:1.3;margin:0 0 var(--s2)}
+.opt{display:flex;align-items:center;gap:var(--s3);width:100%;min-height:56px;padding:var(--s3) var(--s4);border:1.5px solid var(--sage7);border-radius:var(--r1);background:#fff;text-align:left;cursor:pointer;transition:border-color .15s var(--e),background-color .15s var(--e),transform .12s var(--e)}
+.opt::before{content:"";flex:none;width:16px;height:16px;border-radius:50%;border:2px solid var(--sage7)}.opt:active{transform:scale(.99)}
+.opt[aria-pressed=true]{border-color:var(--copper);background:#FCF6F2}.opt[aria-pressed=true]::before{border-color:var(--copper);background:var(--copper);box-shadow:inset 0 0 0 3px #fff}
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:var(--s5)}.small{font-size:.875rem;color:var(--char)}
+form.mail{display:grid;gap:var(--s4)}input[type=email]{min-height:52px;padding:0 var(--s4);border:1.5px solid var(--sage7);border-radius:var(--r1);background:#fff}[aria-invalid=true]{border-color:var(--err)!important}.err{color:var(--err);font-size:.875rem;font-weight:500;margin:0}
+.chk{display:flex;gap:var(--s3);padding:var(--s4);border-radius:var(--r1);background:var(--ivory)}.chk input{width:22px;height:22px;margin:0;accent-color:var(--act);flex:none}
+.tip b,.res .tag{display:flex;align-items:center;gap:var(--s2);font-weight:600;margin-bottom:var(--s2)}.tip b::after,.res .tag::after{content:"";width:20px;height:4px;background:var(--copper)}
+.merk{font-size:1.25rem;font-weight:600}.merk span{display:block;font-size:1rem;font-weight:500;color:var(--char)}.merk::after{content:"";display:block;width:32px;height:4px;background:var(--copper);margin-top:var(--s3)}
+.paths{position:relative;display:grid;gap:var(--s4);padding-left:32px}.paths::before{content:"";position:absolute;left:7px;top:40px;bottom:40px;width:2px;background:var(--sage)}
+.path{position:relative;background:#fff;border-radius:var(--r2);padding:var(--s5)}.path::before{content:"";position:absolute;left:-32px;top:var(--s6);width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid var(--slate)}.path.on::before{background:var(--copper);border-color:var(--copper)}
+.mk{position:relative;margin:0;border-radius:var(--r2);overflow:hidden;background:#DCE2DF}.mk>img:first-child{width:100%;height:100%;object-fit:cover}.ai-label{position:absolute;top:var(--s3);left:var(--s3);width:32px;height:32px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+main{max-width:1120px;margin:0 auto;padding:var(--s7) 20px var(--s9)}h1{font-size:2.5rem;line-height:1.1;font-weight:600;margin:0 0 var(--s4)}h2{font-size:1.625rem;font-weight:600;margin:var(--s9) 0 var(--s5);padding-top:var(--s5);border-top:1px solid var(--line)}h3{font-size:1.125rem;margin:var(--s6) 0 var(--s3)}
+.g{display:grid;gap:var(--s5);grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}.row{display:flex;flex-wrap:wrap;gap:var(--s4);align-items:center}
+.cs{display:inline-block;padding:27px;outline:1px dashed var(--sage7)}.sw i{display:block;height:64px;border-radius:var(--r1);margin-bottom:var(--s3);border:1px solid var(--line)}.sw p{margin:0;font-size:.875rem}
+table{width:100%;border-collapse:collapse;background:#fff}th,td{padding:var(--s3) var(--s4);text-align:left;border-bottom:1px solid var(--line)}
+@media(max-width:600px){thead{display:none}tr{display:block;padding:var(--s3) 0}td{display:flex;justify-content:space-between;gap:var(--s4);border:0;padding:6px var(--s4)}td::before{content:attr(data-label);font-weight:600}}
+</style></head><body><main>
+<img src="../assets/logo/alarmark_logo_primaer.svg" width="192" height="31" alt="alarmark">
+<h1>Styleguide v1 – Warm Precision</h1><p>Idee: Der Copper-Unterstrich aus dem Logo ist der Marker für „dein nächster Schritt“. Er taucht nur dort auf, wo du handelst oder gewählt hast: Fortschritt, deine Auswahl, Marks Tipp.</p>
+
+<h2>Logo</h2>
+<div class="row"><div class="tile"><span class="cs"><img src="../assets/logo/alarmark_logo_primaer.svg" width="240" height="38" alt="alarmark Primär"></span><p class="small">Primär auf Ivory/Weiß · Schutzraum 1 × x-Höhe (bei 240 px = 27 px)</p></div>
+<div class="tile" style="background:var(--slate)"><img src="../assets/logo/alarmark_logo_invers.svg" width="240" height="38" alt="alarmark Invers"><p class="small" style="color:#E7ECEA">Invers auf Deep Slate, ab 104 px</p></div>
+<div class="tile" style="background:var(--sage)"><img src="../assets/logo/alarmark_logo_mono_slate.svg" width="240" height="38" alt="alarmark Mono Slate"><p class="small" style="color:var(--slate)">Auf Sage nur Mono Slate</p></div></div>
+<h3>Kurzzeichen a_</h3><div class="row"><img src="../assets/logo/alarmark_kurzzeichen_hell.svg" width="16" height="16" alt="a_ 16 px"><img src="../assets/logo/alarmark_kurzzeichen_hell.svg" width="32" height="32" alt="a_ 32 px"><img src="../assets/logo/alarmark_kurzzeichen_dunkel.svg" width="48" height="48" alt="a_ 48 px"><img src="../assets/logo/alarmark_kurzzeichen_dunkel.svg" width="96" height="96" alt="a_ Avatar rund" style="border-radius:50%"></div>
+<p class="small">Mindestbreiten: Primär/Mono Slate 96 px, Invers/Mono Weiß 104 px, Kurzzeichen 16 px. No-Gos: Logo-Spezifikation v2, Abschnitt 7. Logo ist final und wird nur über die SVG-Dateien eingebunden.</p>
+
+<h2>Farben</h2><div class="g">
+<div class="sw"><i style="background:#172E38"></i><p><b>Deep Slate #172E38</b> · Marke, Text · 12,7:1 auf Ivory, 14,2:1 auf Weiß</p></div>
+<div class="sw"><i style="background:#263238"></i><p><b>Charcoal #263238</b> · Nebentext · 11,8:1 Ivory</p></div>
+<div class="sw"><i style="background:#A94E2D"></i><p><b>Action #A94E2D</b> · Button, Link · Weiß darauf 5,5:1, auf Ivory 4,9:1 · Hover #913F23 7,2:1 · Pressed #81351E 8,5:1</p></div>
+<div class="sw"><i style="background:#C66A45"></i><p><b>Copper #C66A45</b> · nur Unterstrich, Fortschritt, deine Wahl · 3,4:1 Ivory · nie Text</p></div>
+<div class="sw"><i style="background:#8A9C96"></i><p><b>Sage #8A9C96</b> · Linien, Flächen · kein Text (2,6:1)</p></div>
+<div class="sw"><i style="background:#73857F"></i><p><b>Sage 700 #73857F</b> · NEU, Vorschlag · Feldrahmen 3,9:1 auf Weiß</p></div>
+<div class="sw"><i style="background:#F5F2EB"></i><p><b>Warm Ivory #F5F2EB</b> / <b>Weiß</b> · Grund / Fläche</p></div>
+<div class="sw"><i style="background:#155EEF"></i><p><b>Focus #155EEF</b> · 4,8:1 Ivory; auf Slate weißer Ring</p></div>
+<div class="sw"><i style="background:#B42318"></i><p><b>Error #B42318</b> 6,6:1 Weiß · Success #176B4D 6,5:1 · Disabled #B9CAC3 + Slate 8,3:1</p></div></div>
+<p class="small">Flächenanteil: Ivory/Weiß ca. 80 %, Slate ca. 15 %, Copper/Action höchstens 5 %. Kontraste nach WCAG-Formel gerechnet, nicht gemessen.</p>
+
+<h2>Typografie – IBM Plex Sans 400/500/600</h2>
+<p style="font-size:3.25rem;font-weight:600;line-height:1.12;letter-spacing:-.015em;margin:0">H1 52/58 Desktop</p><p style="font-size:2.125rem;font-weight:600;line-height:1.12;margin:0">H1 34/38 Mobil · H2 32 Desktop</p><p style="font-size:1.625rem;font-weight:600;margin:0">H2 26/31 Mobil</p><p style="font-size:1.25rem;font-weight:600;margin:0">H3 20/26</p><p style="font-size:1.125rem;margin:0">Lead 18/28</p><p style="margin:0">Text 16/25, max. 62 Zeichen je Zeile</p><p class="small">Klein 14/21 nur für Hinweise · Ziffern: Plex tabellarisch (font-variant-numeric:tabular-nums) in Kosten.</p>
+
+<h2>Abstände und Raster</h2><p>Skala 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 px. Innerhalb einer Gruppe 8–16, zwischen Gruppen 24–32, Abschnitte 64 mobil / 96 Desktop. Mobil 1 Spalte, Rand 20 px. Desktop 12 Spalten, max. 1200 px, Rand 48, Spalte 24. Radien 8 (Bedienelemente) und 16 (Karten, Bilder).</p>
+
+<h2>Buttons</h2><div class="row"><button class="btn">Standard</button><button class="btn h">Hover</button><button class="btn p">Gedrückt</button><button class="btn f">Fokus</button><button class="btn" disabled>Deaktiviert</button><button class="lnk">Sekundär-Link</button></div>
+<p class="small">Pro Ansicht genau ein Primärbutton. Mindesthöhe 52 px (Link 44 px). Hover nur bei Maus, Druck 0,98 in 120 ms.</p>
+
+<h2>Check und Formular</h2><p class="small">Fragen- und Formulartexte sind Beispiele (Vorschlag für Copywriting); Einwilligungstext folgt nach Rechtsprüfung.</p><div class="g">
+<div class="quiz"><div class="qbar"><i style="width:33%"></i></div><div class="qstep"><p class="qq">Wohnst du zur Miete oder im Eigentum?</p><button class="opt" aria-pressed="false">Zur Miete</button><button class="opt" aria-pressed="true">Im Eigentum</button></div><div class="qnav"><button class="lnk">Zurück</button><button class="btn">Weiter</button></div></div>
+<div class="quiz res"><p class="tag">Dein Weg</p><h3 style="margin:0 0 16px">Vom Fachbetrieb installieren lassen</h3><form class="mail"><label for="e" style="font-weight:500">E-Mail-Adresse</label><input id="e" type="email" aria-invalid="true" aria-describedby="er" value="mark@"><p class="err" id="er">Bitte prüf deine E-Mail-Adresse.</p><label class="chk"><input type="checkbox"><span>Optionale Einwilligung zur Weitergabe an einen Fachbetrieb (Platzhalter)</span></label><p class="small">Nie vorausgewählt, getrennt vom Absenden.</p></form></div></div>
+
+<h2>Karten</h2><div class="g"><div class="tip"><b>Marks Tipp</b>„Kläre zuerst, was deine Alarmanlage leisten soll. Dann lassen sich auch die Preise besser vergleichen.“</div><div class="tile"><p class="merk"><span>Marks Merksatz:</span>Erst verstehen, dann entscheiden.</p></div></div>
+<p class="small">Keine Seitenstreifen, keine Icon-Kacheln, keine Karten in Karten, Innenabstand mindestens 24 px.</p>
+
+<h2>Minimal Path</h2><div class="g"><div class="paths"><div class="path"><b>Selbst installieren</b></div><div class="path on"><b>Vom Fachbetrieb installieren lassen</b></div><div class="path"><b>Mit professioneller Leitstelle</b></div></div>
+<ul><li>Linie nur bei echter Beziehung: eine Entscheidung, drei Wege.</li><li>Alle Wege gleich groß, gleich gefärbt.</li><li>Copper-Knoten nur für die Wahl der Person (hier Beispiel), nie für „beste“ Option.</li><li>Mobil vertikal, Desktop horizontal.</li></ul></div>
+
+<h2>Mark – Bildausschnitte mit KI-Icon</h2><div class="g">
+<figure class="mk" style="aspect-ratio:4/5"><img src="../assets/img/mark-hero.webp" alt="Mark" style="object-position:50% 18%"><img class="ai-label" src="../assets/ai-label.png" alt="KI-generiert"></figure>
+<figure class="mk" style="aspect-ratio:1"><img src="../assets/img/mark-hero.webp" alt="Mark" style="object-position:50% 14%"><img class="ai-label" src="../assets/ai-label.png" alt="KI-generiert"></figure>
+<figure class="mk" style="aspect-ratio:4/5"><img src="../assets/img/mark-portrait.webp" alt="Mark zeigt zur Tür" style="object-position:45% 20%"><img class="ai-label" src="../assets/ai-label.png" alt="KI-generiert"></figure>
+<figure class="mk" style="aspect-ratio:3/2"><img src="../assets/img/mark-tablet.webp" alt="Mark mit Tablet" style="object-position:50% 25%"><img class="ai-label" src="../assets/ai-label.png" alt="KI-generiert"></figure></div>
+<p class="small">mark-hero 4:5 mobil und Desktop (50 % 18 %), 1:1 Quadrat (50 % 14 %); mark-portrait 4:5 (45 % 20 %); mark-tablet 3:2 (50 % 25 %). Gesicht immer vollständig. KI-Icon 32 px oben links, kein Textlabel.</p>
+
+<h2>Bewegung</h2><p>Nur Rückmeldung und Orientierung: Farbe 150 ms, Druck 120 ms, Fortschritt 200 ms, ease-out. Nur transform und opacity bzw. Farbe. Kein Bounce, keine Endlos-Animation. Bei reduzierter Bewegung aus.</p>
+
+<h2>Do und Don't</h2><div class="g"><ul><li>Echte Wohnräume, weiches Licht</li><li>Ein Primärbutton je Ansicht</li><li>Copper sparsam als Marker</li><li>Ivory als Grund, Weiß für Flächen</li></ul><ul><li>Kein Rot als Alarmfarbe, kein Schild, kein Schloss</li><li>Keine Verläufe, Glows, Pill-Chips oder Großbuchstaben-Zeilen</li><li>Weiß auf Copper, Copper als Textfarbe</li><li>Druck, Countdown, vorausgewählte Häkchen</li></ul></div>
+</main></body></html>
