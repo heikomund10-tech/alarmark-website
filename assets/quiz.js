@@ -9,8 +9,7 @@ function seg(){if(A.q1==='Ich wohne zur Miete')return 'A';var v=A.q4;
  if(v==='Selbst machen und günstig')return 'B';if(v==='Rundum-Service mit Leitstelle')return 'D';return 'C'}
 function intro(){var sb=document.querySelector('[data-quiz-start]');
  if(sb){sb.onclick=function(){i=0;step(true);var b=el.querySelector('.opt');if(b)b.focus()};i=0;step(false);return}
- el.innerHTML='<button class="btn" id="go">'+esc(Q.cta||'Check starten')+'</button>';
- document.getElementById('go').onclick=function(){i=0;step(true)}}
+ i=0;step(false)}
 function step(sc){if(sc===undefined)sc=true;var q=qs[i],sel=A[q.id]||(multi(q)?[]:null);
  var h='<div class="qbar"><i style="width:'+Math.round(i/qs.length*100)+'%"></i></div><div class="qstep"><span class="small">Frage '+(i+1)+' von '+qs.length+'</span><p class="qq">'+esc(q.frage)+'</p>';
  q.optionen.forEach(function(o,k){var on=multi(q)?sel.indexOf(o)>-1:sel===o;h+='<button class="opt" data-k="'+k+'" aria-pressed="'+on+'">'+esc(o)+'</button>'});
