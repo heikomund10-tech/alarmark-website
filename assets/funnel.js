@@ -58,11 +58,11 @@ function costRow(id,u){var r=(F.kosten.rows[id]||{})['U'+u];if(!r)return null;va
 function ul(a){return a.length?'<ul>'+a.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>':''}
 function result(){var d=decide(),id=d.m+d.a,u=scope();send({stage:'result',quiz:M,result:id,u:u});
  var h=M==='alarm'?alarmRes(d,id,u):kostenRes(d,id,u);
- if(M!=='alarm'&&F.mail_on)h+=mailBox();
  h+='<p><button class="lnk" type="button" id="rs">Neu starten</button></p>';
  el.innerHTML=h;el.scrollIntoView({block:'start'});bindChg();
  document.getElementById('rs').onclick=function(){A={};hist=[];REG=null;UNL=false;plzDone=false;WEG=WEG0;U=U0;WF=WF0;if(M==='kosten'&&WEG&&U)result();else step(true)};
- if(M==='alarm'&&!UNL)bindWall(id);else if(F.mail_on)bindMail(id)}
+ if(!UNL)bindWall(id);else bindPdf()}
+function gate(g){GATED=g;return UNL?g+pdfBox():'<div class="gate" id="gate"><div class="gate-in" aria-hidden="true" inert>'+g+'</div>'+wallForm()+'</div>'}
 function alarmRes(d,id,u){var r=F.results[id],g='';
  var t=(d.m==='S'&&A.a4==='a4c')||(d.m==='P'&&has('a4a','a4b'))?r.trotz:r.standard;if(d.region)t+=' '+r.region;
  var h='<div class="res"><span class="tag">Dein Ergebnis</span><h3>'+esc(r.titel)+'</h3><p>'+esc(fill(t))+'</p>';
@@ -73,31 +73,55 @@ function alarmRes(d,id,u){var r=F.results[id],g='';
  g+='<p><strong>Gut zu wissen:</strong> '+esc(r.erkenntnis)+'</p>';
  var pp=[r.pp,F.pp_u[u],F.pp_b[A.a6]].filter(Boolean).slice(0,3);g+='<p><strong>Deine Prüfpunkte</strong></p>'+ul(pp);
  var hs=hints(d);if(hs.length)g+='<p><strong>Hinweise</strong></p>'+ul(hs);
- h+=UNL?g:'<div class="gate" id="gate"><div class="gate-in" aria-hidden="true" inert>'+g+'</div>'+wallForm()+'</div>';
- GATED=g;
+ h+=gate(g);
  h+='<p class="small">Quelle: '+esc(r.quelle)+'</p>';
  h+='<details class="small"><summary>So kommen wir darauf</summary><p>'+esc(F.transparenz.replace(/^So kommen wir darauf:\s*/,''))+'</p></details>';
  h+='<p><a class="btn" href="'+F.base+'/alarmanlage-haus-kosten/?weg='+id+'&u='+u+'&wf='+wf()+'">'+esc(F.next_button)+'</a></p></div>';
  return h}
-function kostenRes(d,id,u){var K=F.kosten,r=K.results[id],rw=K.rows[id]||{},alt=id[0]+(id[1]==='E'?'L':'E'),c=costRow(id,u),ca=costRow(alt,u);
+function kostenRes(d,id,u){var K=F.kosten,r=K.results[id],rw=K.rows[id]||{},alt=id[0]+(id[1]==='E'?'L':'E'),c=costRow(id,u),ca=costRow(alt,u),g='';
  var b=(A.a4&&A.a5?fill('Du hast gesagt: „{a4}“ und „{a5}“. '):'')+K.begr[id].replace('{Umfangstext}',K.umfangstext['U'+u]);
  var h=(WEG?kopf():'')+'<div class="res"><span class="tag">Dein Ergebnis</span><h3>'+esc(r.titel)+'</h3><p>'+esc(b)+'</p>';
- h+='<ul><li>Anschaffung: '+esc(c.an)+'</li><li><strong>Über fünf Jahre: '+esc(c.fj)+'</strong></li></ul>';if(rw.laufend)h+='<p class="small">Davon laufend: '+esc(rw.laufend)+'</p>';
- h+='<p class="small">Zum Vergleich – '+esc(F.weg_titel[alt])+': '+esc(ca.fj)+'</p>';
- h+='<p><strong>Gut zu wissen:</strong> '+esc(r.erkenntnis)+'</p><p><strong>Deine Prüfpunkte</strong></p>'+ul(r.pruefpunkte);
+ h+='<p><strong>Über fünf Jahre: '+esc(c.fj)+'</strong></p>';
+ g+='<p><strong>Deine Kosten im Detail</strong></p><ul><li>Anschaffung: '+esc(c.an)+'</li><li>Über fünf Jahre: '+esc(c.fj)+'</li></ul>';if(rw.laufend)g+='<p class="small">Davon laufend: '+esc(rw.laufend)+'</p>';
+ g+='<p class="small">Zum Vergleich – '+esc(F.weg_titel[alt])+': '+esc(ca.fj)+'</p>';
+ g+='<p><strong>Gut zu wissen:</strong> '+esc(r.erkenntnis)+'</p><p><strong>Deine Prüfpunkte</strong></p>'+ul(r.pruefpunkte);
+ h+=gate(g);
  h+='<p class="small">Quelle: '+esc(r.quelle)+'; '+esc(c.q)+'</p><details class="small"><summary>So rechnen wir</summary><p>'+esc(K.transparenz.replace(/^So rechnen wir:\s*/,''))+'</p></details></div>';
  if(!WEG0)h+='<p class="small">'+esc(K.region_hinweis)+'.</p><p><a class="btn" href="'+F.base+'/#check">Jetzt Alarm-Check starten</a></p>';
  return h}
-function wallForm(){var W=F.email_schritt.alarm,E=F.email;return '<form class="mail wall" id="wf" novalidate><p><strong>'+esc(W.ueberschrift)+'</strong></p><p>'+esc(W.satz)+'</p><label for="em"><strong>'+esc(E.feld_email)+'</strong></label><input id="em" type="email" autocomplete="email" inputmode="email" required>'+
+function wt(){var T=F.wall_teaser&&F.wall_teaser[M],W=F.email_schritt[M]||F.email_schritt.alarm;
+ return T||{ueberschrift:W.ueberschrift,satz:'Du erhältst die komplette Auswertung plus einen Report zur Gesamtsituation in Deutschland und wie deine Region abschneidet.',button:W.button}}
+function wallForm(){var W=wt(),E=F.email;return '<form class="mail wall" id="wf" novalidate><p><strong>'+esc(W.ueberschrift)+'</strong></p><p>'+esc(W.satz)+'</p><label for="em"><strong>'+esc(E.feld_email)+'</strong></label><input id="em" type="email" autocomplete="email" inputmode="email" required>'+
  '<label class="chk"><input type="checkbox" id="c1"><span>'+md(E.label)+'</span></label><p class="small">'+md(E.detail)+'</p>'+
  '<input id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"><p class="err" id="er"></p><button class="btn" type="submit">'+esc(W.button)+'</button></form>'}
 function bindWall(id){var f=document.getElementById('wf');if(!f)return;f.onsubmit=function(e){e.preventDefault();var em=document.getElementById('em').value.trim(),er=document.getElementById('er');
  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){er.textContent='Bitte prüf deine E-Mail-Adresse.';return}
  if(!document.getElementById('c1').checked){er.textContent='Dafür brauchen wir dein Häkchen.';return}
  er.textContent='';var b=f.querySelector('button[type=submit]');b.disabled=true;
- send({stage:'lead',quiz:M,result:id,u:scope(),wf:wf(),email:em,consent_mail:true,consent_forward:false,plz:'',consent_text_mail:F.email.label+' '+F.email.detail,consent_text_forward:'',hp:document.getElementById('hp').value},function(ok){
+ /* report in the mail needs the district: only the district key leaves the browser, never the postcode (Heiko 30.10.2026) */
+ send({stage:'lead',quiz:M,result:id,u:scope(),wf:wf(),kreis:REG?REG.ks[0]:'',email:em,consent_mail:true,consent_forward:false,plz:'',consent_text_mail:F.email.label+' '+F.email.detail,consent_text_forward:'',hp:document.getElementById('hp').value},function(ok){
   if(!ok){b.disabled=false;er.textContent='Das hat leider nicht geklappt. Bitte versuch es gleich noch einmal.';return}
-  UNL=true;var gt=document.getElementById('gate');gt.outerHTML='<p class="small">'+esc(F.email_schritt.alarm.danke)+'</p>'+GATED})}}
+  /* PDF only becomes visible after the address was saved (Heiko 30.10.2026) */
+  UNL=true;var dk=(F.wall_teaser&&F.wall_teaser['danke_'+M])||(F.email_schritt[M]||F.email_schritt.alarm).danke;
+  document.getElementById('gate').outerHTML='<p class="small">'+esc(dk)+'</p>'+GATED+pdfBox();bindPdf()})}}
+function RT(){return F.report_texte||{titel:'Report: Kriminalität in Deutschland und in deinem Kreis',titel_deutschland_only:'Report: Kriminalität in Deutschland'}}
+function pdfBox(){var T=RT();return '<div class="plz" id="pdfb"><p><strong>'+esc(REG?T.titel:(T.titel_deutschland_only||T.titel))+'</strong></p><p><button class="btn" type="button" id="pdfg">Report als PDF herunterladen</button></p><p class="err" id="pdfe"></p></div>'}
+function load(src){return new Promise(function(ok,no){if(window.jspdf)return ok();var s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
+function bindPdf(){var b=document.getElementById('pdfg');if(!b)return;b.onclick=function(){b.disabled=true;
+ Promise.all([fetch(F.reportdata).then(function(r){return r.json()}),load(F.jspdf)]).then(function(x){makePdf(x[0]);b.disabled=false}).catch(function(){b.disabled=false;document.getElementById('pdfe').textContent='Der Report konnte gerade nicht erstellt werden. Bitte versuch es gleich noch einmal.'})}}
+function makePdf(R){var T=RT(),k=REG?R.kreis[REG.ks[0]]:null,doc=new window.jspdf.jsPDF({unit:'mm',format:'a4'}),y=20,W=170,fmt=function(n){return (Math.round(n*10)/10).toFixed(1).replace('.',',').replace(/\B(?=(\d{3})+(?!\d)\,)/g,'.')};
+ function txt(s,size,bold){doc.setFont('helvetica',bold?'bold':'normal');doc.setFontSize(size);var l=doc.splitTextToSize(String(s||''),W);if(y+l.length*size*0.45>280){doc.addPage();y=20}doc.text(l,20,y);y+=l.length*size*0.45+3}
+ txt(k?T.titel:(T.titel_deutschland_only||T.titel),16,true);if(k)txt('Dein Kreis: '+k[0],11,false);
+ if(T.einleitung)txt(T.einleitung,10);if(T.lesehilfe)txt(T.lesehilfe,10);
+ y+=2;doc.setFontSize(9);doc.setFont('helvetica','bold');var cx=[20,95,130,160];
+ doc.text('Delikt',cx[0],y);doc.text('Deutschland',cx[1],y);if(k){doc.text('Dein Kreis',cx[2],y);doc.text('Platz (von '+R.n+')',cx[3],y)}y+=2;doc.line(20,y,190,y);y+=5;doc.setFont('helvetica','normal');
+ R.delikte.forEach(function(n,i){doc.text(n,cx[0],y);doc.text(fmt(R.bund[i]),cx[1],y);if(k){doc.text(fmt(k[i+1][0]),cx[2],y);doc.text(String(k[i+1][1]),cx[3],y)}y+=6});
+ doc.setFontSize(8);doc.text('Fälle je 100.000 Einwohner. Platz 1 = höchster Wert unter allen Kreisen.',20,y);y+=8;
+ if(T.kleine_fallzahlen)txt(T.kleine_fallzahlen,9);txt(T.grenzen||F.plz.grenze,9);
+ if(!k&&T.hinweis_deutschland_only)txt(T.hinweis_deutschland_only,9);
+ txt('Quelle: Polizeiliche Kriminalstatistik, Bundeskriminalamt, Berichtsjahr 2025, Version '+R.version+', Datenlizenz Deutschland – Namensnennung 2.0.'+(k?' PLZ-Zuordnung: OpenPLZ auf Basis von OpenStreetMap, © OpenStreetMap-Mitwirkende, ODbL.':''),8);
+ txt('Alarmark · mark@alarmark.de · Mark ist eine KI-Figur von Alarmark.',8);
+ doc.save('Alarmark-Report'+(k?'-'+k[0].replace(/[^A-Za-z0-9ÄÖÜäöüß-]+/g,'-'):'-Deutschland')+'.pdf')}
 function mailBox(){var E=F.email;return '<form class="mail" id="mf" novalidate><p><strong>'+esc(E.h||'')+'</strong></p><label for="em"><strong>'+esc(E.feld_email)+'</strong></label><input id="em" type="email" autocomplete="email" inputmode="email" required>'+
  '<label class="chk"><input type="checkbox" id="c1"><span>'+md(E.label)+'</span></label><p class="small">'+md(E.detail)+'</p>'+
  '<input id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"><p class="err" id="er"></p><button class="btn" type="submit">'+esc(E.btn||'Senden')+'</button></form>'}
