@@ -5,7 +5,7 @@
 var F=window.FN,el=document.getElementById('check');if(!F||!el)return;
 var M=F.mode,A={},hist=[],t0=Date.now(),url=new URLSearchParams(location.search);
 var WEG=(url.get('weg')||'').toUpperCase(),U=url.get('u')||'',WF=url.get('wf')||'';if(!/^(SE|SL|PE|PL)$/.test(WEG))WEG='';if(!/^[123]$/.test(U)||!/^[hw]$/.test(WF)||!WEG){U='';WF=''}
-if(M!=='kosten'){WEG='';U='';WF=''}var WEG0=WEG,U0=U,WF0=WF,REG=null,PLZ_ON=M==='alarm'&&!!F.plzdata&&!!F.plz,plzDone=false;
+if(M!=='kosten'){WEG='';U='';WF=''}var UNL=false,GATED='',WEG0=WEG,U0=U,WF0=WF,REG=null,PLZ_ON=M==='alarm'&&!!F.plzdata&&!!F.plz,plzDone=false;
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function has(){for(var i=0;i<arguments.length;i++)for(var k in A)if(A[k]===arguments[i])return true;return false}
 function lab(qid){if(qid==='a2')return lab('a2h')||lab('a2w');var q=F.questions.filter(function(x){return x.id===qid})[0];if(!q||!A[qid])return '';var o=q.optionen.filter(function(x){return x.id===A[qid]})[0];return o?o.label:''}
@@ -40,13 +40,13 @@ function step(scroll){var qs=list(),i=hist.length;if(i>=qs.length){if(PLZ_ON&&!p
 function kopf(){return '<p class="small">'+esc(F.kosten.kopf)+': <strong>'+esc(F.weg_titel[WEG])+'</strong> · <button class="lnk" id="chg" type="button">'+esc(F.kosten.aendern)+'</button></p>'}
 function bindChg(){var ch=document.getElementById('chg');if(ch)ch.onclick=function(){WEG='';U='';WF='';hist=[];A={};step(true)}}
 function plzStep(n){var P=F.plz,N=n+1;
- el.innerHTML='<div class="qbar"><i style="width:'+Math.round(n/N*100)+'%"></i></div><div class="qstep"><span class="small">Frage '+N+' von '+N+'</span><p class="qq">'+esc(P.ueberschrift)+'</p><label for="plz">'+esc(P.eingabe_label)+'</label><input id="plz" type="text" inputmode="numeric" maxlength="5" autocomplete="postal-code"><p class="small">'+esc(P.eingabe_hinweis)+'</p><p><button class="btn" type="button" id="plzb">Ergebnis anzeigen</button></p><div id="plzr" aria-live="polite"></div></div><div class="qnav"><button class="lnk" id="bk" type="button">Zurück</button></div>';
+ el.innerHTML='<div class="qbar"><i style="width:'+Math.round(n/N*100)+'%"></i></div><div class="qstep"><span class="small">Frage '+N+' von '+N+'</span><p class="qq">'+esc(P.ueberschrift)+'</p><label for="plz">'+esc(P.eingabe_label.replace(/\s*\(freiwillig\)/,''))+'</label><input id="plz" type="text" inputmode="numeric" maxlength="5" autocomplete="postal-code"><p class="small">'+esc(P.eingabe_hinweis)+'</p><p><button class="btn" type="button" id="plzb">Ergebnis anzeigen</button></p><div id="plzr" aria-live="polite"></div></div><div class="qnav"><button class="lnk" id="bk" type="button">Zurück</button></div>';
  var inp=document.getElementById('plz'),b=document.getElementById('plzb'),o=document.getElementById('plzr');
  inp.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();b.click()}};
  document.getElementById('bk').onclick=function(){var id=hist.pop();delete A[id];step(true)};
- b.onclick=function(){var v=inp.value.trim();if(!v){REG=null;plzDone=true;return step(true)}
+ var miss=0;b.onclick=function(){var v=inp.value.trim();if(!/^\d{5}$/.test(v)){o.innerHTML='<p>Bitte gib deine fünfstellige Postleitzahl ein.</p>';return}
   if(typeof F.plzdata==='string'){b.disabled=true;fetch(F.plzdata).then(function(r){return r.json()}).then(function(d){F.plzdata=d;b.disabled=false;b.click()}).catch(function(){b.disabled=false;o.innerHTML='<p>Die Regionaldaten konnten gerade nicht geladen werden. Bitte versuch es gleich noch einmal.</p>'});return}
-  var D=F.plzdata,ks=/^\d{5}$/.test(v)&&D.plz[v];if(!ks){o.innerHTML='<p>'+esc(P.unbekannt)+'</p>';return}
+  var D=F.plzdata,ks=D.plz[v];if(!ks){if(++miss>1){REG=null;plzDone=true;return step(true)}o.innerHTML='<p>'+esc(P.unbekannt.replace(/ oder lass das Feld.*$/,'.'))+'</p>';return}
   REG={ks:ks,elev:D.kreis[ks[0]].hz>D.bund*1.15};plzDone=true;step(true)};
  el.scrollIntoView({block:'start',behavior:'smooth'})}
 function regBox(){if(!REG)return '';var P=F.plz,D=F.plzdata,ks=REG.ks,fmt=function(n){return (Math.round(n*10)/10).toFixed(1).replace('.',',')};
@@ -58,20 +58,23 @@ function costRow(id,u){var r=(F.kosten.rows[id]||{})['U'+u];if(!r)return null;va
 function ul(a){return a.length?'<ul>'+a.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>':''}
 function result(){var d=decide(),id=d.m+d.a,u=scope();send({stage:'result',quiz:M,result:id,u:u});
  var h=M==='alarm'?alarmRes(d,id,u):kostenRes(d,id,u);
- if(F.mail_on)h+=mailBox();
+ if(M!=='alarm'&&F.mail_on)h+=mailBox();
  h+='<p><button class="lnk" type="button" id="rs">Neu starten</button></p>';
  el.innerHTML=h;el.scrollIntoView({block:'start'});bindChg();
- document.getElementById('rs').onclick=function(){A={};hist=[];REG=null;plzDone=false;WEG=WEG0;U=U0;WF=WF0;if(M==='kosten'&&WEG&&U)result();else step(true)};
- if(F.mail_on)bindMail(id)}
-function alarmRes(d,id,u){var r=F.results[id];
+ document.getElementById('rs').onclick=function(){A={};hist=[];REG=null;UNL=false;plzDone=false;WEG=WEG0;U=U0;WF=WF0;if(M==='kosten'&&WEG&&U)result();else step(true)};
+ if(M==='alarm'&&!UNL)bindWall(id);else if(F.mail_on)bindMail(id)}
+function alarmRes(d,id,u){var r=F.results[id],g='';
  var t=(d.m==='S'&&A.a4==='a4c')||(d.m==='P'&&has('a4a','a4b'))?r.trotz:r.standard;if(d.region)t+=' '+r.region;
  var h='<div class="res"><span class="tag">Dein Ergebnis</span><h3>'+esc(r.titel)+'</h3><p>'+esc(fill(t))+'</p>';
- h+='<p><strong>Deine Ausstattung</strong> <span class="small">('+esc(lab('a2'))+' · '+esc(lab('a3'))+')</span></p>'+ul(equip(d));
- var c=costRow(id,u);if(c)h+='<p><strong>Deine Kosten</strong></p><ul><li>Anschaffung: '+esc(c.an)+'</li><li>Über fünf Jahre: '+esc(c.fj)+'</li></ul>';
- h+='<p><strong>Gut zu wissen:</strong> '+esc(r.erkenntnis)+'</p>';
- var pp=[r.pp,F.pp_u[u],F.pp_b[A.a6]].filter(Boolean).slice(0,3);h+='<p><strong>Deine Prüfpunkte</strong></p>'+ul(pp);
- var hs=hints(d);if(hs.length)h+='<p><strong>Hinweise</strong></p>'+ul(hs);
+ var c=costRow(id,u);if(c)h+='<p><strong>Deine Kosten über fünf Jahre:</strong> '+esc(c.fj)+'</p>';
  h+=regBox();
+ g+='<p><strong>Deine Ausstattung</strong> <span class="small">('+esc(lab('a2'))+' · '+esc(lab('a3'))+')</span></p>'+ul(equip(d));
+ if(c)g+='<p><strong>Deine Kosten im Detail</strong></p><ul><li>Anschaffung: '+esc(c.an)+'</li><li>Über fünf Jahre: '+esc(c.fj)+'</li></ul>';
+ g+='<p><strong>Gut zu wissen:</strong> '+esc(r.erkenntnis)+'</p>';
+ var pp=[r.pp,F.pp_u[u],F.pp_b[A.a6]].filter(Boolean).slice(0,3);g+='<p><strong>Deine Prüfpunkte</strong></p>'+ul(pp);
+ var hs=hints(d);if(hs.length)g+='<p><strong>Hinweise</strong></p>'+ul(hs);
+ h+=UNL?g:'<div class="gate" id="gate"><div class="gate-in" aria-hidden="true" inert>'+g+'</div>'+wallForm()+'</div>';
+ GATED=g;
  h+='<p class="small">Quelle: '+esc(r.quelle)+'</p>';
  h+='<details class="small"><summary>So kommen wir darauf</summary><p>'+esc(F.transparenz.replace(/^So kommen wir darauf:\s*/,''))+'</p></details>';
  h+='<p><a class="btn" href="'+F.base+'/alarmanlage-haus-kosten/?weg='+id+'&u='+u+'&wf='+wf()+'">'+esc(F.next_button)+'</a></p></div>';
@@ -85,6 +88,16 @@ function kostenRes(d,id,u){var K=F.kosten,r=K.results[id],rw=K.rows[id]||{},alt=
  h+='<p class="small">Quelle: '+esc(r.quelle)+'; '+esc(c.q)+'</p><details class="small"><summary>So rechnen wir</summary><p>'+esc(K.transparenz.replace(/^So rechnen wir:\s*/,''))+'</p></details></div>';
  if(!WEG0)h+='<p class="small">'+esc(K.region_hinweis)+'.</p><p><a class="btn" href="'+F.base+'/#check">Jetzt Alarm-Check starten</a></p>';
  return h}
+function wallForm(){var W=F.email_schritt.alarm,E=F.email;return '<form class="mail wall" id="wf" novalidate><p><strong>'+esc(W.ueberschrift)+'</strong></p><p>'+esc(W.satz)+'</p><label for="em"><strong>'+esc(E.feld_email)+'</strong></label><input id="em" type="email" autocomplete="email" inputmode="email" required>'+
+ '<label class="chk"><input type="checkbox" id="c1"><span>'+md(E.label)+'</span></label><p class="small">'+md(E.detail)+'</p>'+
+ '<input id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"><p class="err" id="er"></p><button class="btn" type="submit">'+esc(W.button)+'</button></form>'}
+function bindWall(id){var f=document.getElementById('wf');if(!f)return;f.onsubmit=function(e){e.preventDefault();var em=document.getElementById('em').value.trim(),er=document.getElementById('er');
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){er.textContent='Bitte prüf deine E-Mail-Adresse.';return}
+ if(!document.getElementById('c1').checked){er.textContent='Dafür brauchen wir dein Häkchen.';return}
+ er.textContent='';var b=f.querySelector('button[type=submit]');b.disabled=true;
+ send({stage:'lead',quiz:M,result:id,u:scope(),wf:wf(),email:em,consent_mail:true,consent_forward:false,plz:'',consent_text_mail:F.email.label+' '+F.email.detail,consent_text_forward:'',hp:document.getElementById('hp').value},function(ok){
+  if(!ok){b.disabled=false;er.textContent='Das hat leider nicht geklappt. Bitte versuch es gleich noch einmal.';return}
+  UNL=true;var gt=document.getElementById('gate');gt.outerHTML='<p class="small">'+esc(F.email_schritt.alarm.danke)+'</p>'+GATED})}}
 function mailBox(){var E=F.email;return '<form class="mail" id="mf" novalidate><p><strong>'+esc(E.h||'')+'</strong></p><label for="em"><strong>'+esc(E.feld_email)+'</strong></label><input id="em" type="email" autocomplete="email" inputmode="email" required>'+
  '<label class="chk"><input type="checkbox" id="c1"><span>'+md(E.label)+'</span></label><p class="small">'+md(E.detail)+'</p>'+
  '<input id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"><p class="err" id="er"></p><button class="btn" type="submit">'+esc(E.btn||'Senden')+'</button></form>'}
