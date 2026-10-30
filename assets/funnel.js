@@ -6,6 +6,7 @@ var F=window.FN,el=document.getElementById('check');if(!F||!el)return;
 var M=F.mode,A={},hist=[],t0=Date.now(),url=new URLSearchParams(location.search);
 var WEG=(url.get('weg')||'').toUpperCase(),U=url.get('u')||'',WF=url.get('wf')||'';if(!/^(SE|SL|PE|PL)$/.test(WEG))WEG='';if(!/^[123]$/.test(U)||!/^[hw]$/.test(WF)||!WEG){U='';WF=''}
 if(M!=='kosten'){WEG='';U='';WF=''}var UNL=false,GATED='',KR0=(function(){try{return M==='kosten'?sessionStorage.getItem('al_kreis'):''}catch(e){return ''}})(),WEG0=WEG,U0=U,WF0=WF,REG=null,PLZ_ON=M==='alarm'&&!!F.plzdata&&!!F.plz,plzDone=false;
+function ev(e,x){try{window.alEv&&window.alEv(e,x)}catch(err){}}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function has(){for(var i=0;i<arguments.length;i++)for(var k in A)if(A[k]===arguments[i])return true;return false}
 function lab(qid){if(qid==='a2')return lab('a2h')||lab('a2w');var q=F.questions.filter(function(x){return x.id===qid})[0];if(!q||!A[qid])return '';var o=q.optionen.filter(function(x){return x.id===A[qid]})[0];return o?o.label:''}
@@ -34,11 +35,11 @@ function step(scroll){var qs=list(),i=hist.length;if(i>=qs.length){if(PLZ_ON&&!p
  h+='</div><div class="qnav">'+(i?'<button class="lnk" id="bk" type="button">Zurück</button>':'')+'</div>';
  if(M==='kosten'&&WEG&&i===0)h=kopf()+h;
  el.innerHTML=h;
- [].forEach.call(el.querySelectorAll('.opt'),function(b){b.onclick=function(){A[q.id]=b.dataset.o;hist.push(q.id);step(true)}});
+ [].forEach.call(el.querySelectorAll('.opt'),function(b){b.onclick=function(){if(!hist.length)ev('q_start',M);A[q.id]=b.dataset.o;ev('q_answer',M+':'+q.id);hist.push(q.id);step(true)}});
  var bk=document.getElementById('bk');if(bk)bk.onclick=function(){var id=hist.pop();delete A[id];step(true)};
  bindChg();if(scroll)el.scrollIntoView({block:'start',behavior:'smooth'})}
 function kopf(){return '<p class="small">'+esc(F.kosten.kopf)+': <strong>'+esc(F.weg_titel[WEG])+'</strong> · <button class="lnk" id="chg" type="button">'+esc(F.kosten.aendern)+'</button></p>'}
-function bindChg(){var ch=document.getElementById('chg');if(ch)ch.onclick=function(){WEG='';U='';WF='';hist=[];A={};step(true)}}
+function bindChg(){var ch=document.getElementById('chg');if(ch)ch.onclick=function(){ev('change',M);WEG='';U='';WF='';hist=[];A={};step(true)}}
 function plzStep(n){var P=F.plz,N=n+1;
  el.innerHTML='<div class="qbar"><i style="width:'+Math.round(n/N*100)+'%"></i></div><div class="qstep"><span class="small">Frage '+N+' von '+N+'</span><p class="qq">'+esc(P.ueberschrift)+'</p><label for="plz">'+esc(P.eingabe_label.replace(/\s*\(freiwillig\)/,''))+'</label><input id="plz" type="text" inputmode="numeric" maxlength="5" autocomplete="postal-code"><p class="small">'+esc(P.eingabe_hinweis)+'</p><p><button class="btn" type="button" id="plzb">Ergebnis anzeigen</button></p><div id="plzr" aria-live="polite"></div></div><div class="qnav"><button class="lnk" id="bk" type="button">Zurück</button></div>';
  var inp=document.getElementById('plz'),b=document.getElementById('plzb'),o=document.getElementById('plzr');
@@ -46,8 +47,8 @@ function plzStep(n){var P=F.plz,N=n+1;
  document.getElementById('bk').onclick=function(){var id=hist.pop();delete A[id];step(true)};
  var miss=0;b.onclick=function(){var v=inp.value.trim();if(!/^\d{5}$/.test(v)){o.innerHTML='<p>Bitte gib deine fünfstellige Postleitzahl ein.</p>';return}
   if(typeof F.plzdata==='string'){b.disabled=true;fetch(F.plzdata).then(function(r){return r.json()}).then(function(d){F.plzdata=d;b.disabled=false;b.click()}).catch(function(){b.disabled=false;o.innerHTML='<p>Die Regionaldaten konnten gerade nicht geladen werden. Bitte versuch es gleich noch einmal.</p>'});return}
-  var D=F.plzdata,ks=D.plz[v];if(!ks){if(++miss>1){REG=null;plzDone=true;return step(true)}o.innerHTML='<p>'+esc(P.unbekannt.replace(/ oder lass das Feld.*$/,'.'))+'</p>';return}
-  REG={ks:ks,elev:D.kreis[ks[0]].hz>D.bund*1.15};try{sessionStorage.setItem('al_kreis',ks[0])}catch(e){}plzDone=true;step(true)};
+  var D=F.plzdata,ks=D.plz[v];if(!ks){ev('plz_miss');if(++miss>1){REG=null;plzDone=true;return step(true)}o.innerHTML='<p>'+esc(P.unbekannt.replace(/ oder lass das Feld.*$/,'.'))+'</p>';return}
+  REG={ks:ks,elev:D.kreis[ks[0]].hz>D.bund*1.15};try{sessionStorage.setItem('al_kreis',ks[0])}catch(e){}ev('plz_ok');plzDone=true;step(true)};
  el.scrollIntoView({block:'start',behavior:'smooth'})}
 function regBox(){if(!REG)return '';var P=F.plz,D=F.plzdata,ks=REG.ks,fmt=function(n){return (Math.round(n*10)/10).toFixed(1).replace('.',',')};
  var k=D.kreis[ks[0]],r=k.hz/D.bund,t=(r<0.85?P.unter:r>1.15?P.ueber:P.um).replace('{kreis}',k.n).replace('{hz_kreis}',fmt(k.hz)).replace('{hz_bund}',fmt(D.bund));
@@ -56,11 +57,11 @@ function regBox(){if(!REG)return '';var P=F.plz,D=F.plzdata,ks=REG.ks,fmt=functi
 function hints(d){var h=[];if(has('a1b','a1d'))h.push(F.hints.miete);if(d.tie)h.push(F.hints.ls);return h.slice(0,REG?2:3)}
 function costRow(id,u){var r=(F.kosten.rows[id]||{})['U'+u];if(!r)return null;var w=wf();return {an:r.an[w],fj:r.fj[w],q:r.q}}
 function ul(a){return a.length?'<ul>'+a.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>':''}
-function result(){var d=decide(),id=d.m+d.a,u=scope();send({stage:'result',quiz:M,result:id,u:u});
+function result(){var d=decide(),id=d.m+d.a,u=scope();send({stage:'result',quiz:M,result:id,u:u});ev('result',M+':'+id+'-U'+u);if(!UNL)ev('wall_view',M);
  var h=M==='alarm'?alarmRes(d,id,u):kostenRes(d,id,u);
  h+='<p><button class="lnk" type="button" id="rs">Neu starten</button></p>';
  el.innerHTML=h;el.scrollIntoView({block:'start'});bindChg();
- document.getElementById('rs').onclick=function(){A={};hist=[];REG=KR0&&/^\d{5}$/.test(KR0)?{ks:[KR0],elev:false}:null;UNL=false;plzDone=false;WEG=WEG0;U=U0;WF=WF0;if(M==='kosten'&&WEG&&U)result();else step(true)};
+ document.getElementById('rs').onclick=function(){ev('restart',M);A={};hist=[];REG=KR0&&/^\d{5}$/.test(KR0)?{ks:[KR0],elev:false}:null;UNL=false;plzDone=false;WEG=WEG0;U=U0;WF=WF0;if(M==='kosten'&&WEG&&U)result();else step(true)};
  if(!UNL)bindWall(id);else bindPdf()}
 function gate(g){GATED=g;return UNL?g+pdfBox():'<div class="gate" id="gate"><div class="gate-in" aria-hidden="true" inert>'+g+'</div>'+wallForm()+'</div>'}
 function alarmRes(d,id,u){var r=F.results[id],g='';
@@ -76,7 +77,7 @@ function alarmRes(d,id,u){var r=F.results[id],g='';
  h+=gate(g);
  h+='<p class="small">Quelle: '+esc(r.quelle)+'</p>';
  h+='<details class="small"><summary>So kommen wir darauf</summary><p>'+esc(F.transparenz.replace(/^So kommen wir darauf:\s*/,''))+'</p></details>';
- h+='<p><a class="btn" href="'+F.base+'/alarmanlage-haus-kosten/?weg='+id+'&u='+u+'&wf='+wf()+'">'+esc(F.next_button)+'</a></p></div>';
+ h+='<p><a class="btn" href="'+F.base+'/alarmanlage-haus-kosten/?weg='+id+'&u='+u+'&wf='+wf()+'" onclick="window.alEv&&window.alEv(\'cta_kosten\')">'+esc(F.next_button)+'</a></p></div>';
  return h}
 function kostenRes(d,id,u){var K=F.kosten,r=K.results[id],rw=K.rows[id]||{},alt=id[0]+(id[1]==='E'?'L':'E'),c=costRow(id,u),ca=costRow(alt,u),g='';
  var b=(A.a4&&A.a5?fill('Du hast gesagt: „{a4}“ und „{a5}“. '):'')+K.begr[id].replace('{Umfangstext}',K.umfangstext['U'+u]);
@@ -102,12 +103,12 @@ function bindWall(id){var f=document.getElementById('wf');if(!f)return;f.onsubmi
  send({stage:'lead',quiz:M,result:id,u:scope(),wf:wf(),kreis:REG?REG.ks[0]:'',email:em,consent_mail:true,consent_forward:false,plz:'',consent_text_mail:F.email.label+' '+F.email.detail,consent_text_forward:'',hp:document.getElementById('hp').value},function(ok){
   if(!ok){b.disabled=false;er.textContent='Das hat leider nicht geklappt. Bitte versuch es gleich noch einmal.';return}
   /* PDF only becomes visible after the address was saved (Heiko 30.10.2026) */
-  UNL=true;var dk=(F.wall_teaser&&F.wall_teaser['danke_'+M])||(F.email_schritt[M]||F.email_schritt.alarm).danke;
+  ev('wall_submit',M);UNL=true;var dk=(F.wall_teaser&&F.wall_teaser['danke_'+M])||(F.email_schritt[M]||F.email_schritt.alarm).danke;
   document.getElementById('gate').outerHTML='<p class="small">'+esc(dk)+'</p>'+GATED+pdfBox();bindPdf()})}}
 function RT(){return F.report_texte||{titel:'Report: Kriminalität in Deutschland und in deinem Kreis',titel_deutschland_only:'Report: Kriminalität in Deutschland'}}
 function pdfBox(){var T=RT();return '<div class="plz" id="pdfb"><p><strong>'+esc(REG?T.titel:(T.titel_deutschland_only||T.titel))+'</strong></p><p><button class="btn" type="button" id="pdfg">Report als PDF herunterladen</button></p><p class="err" id="pdfe"></p></div>'}
 function load(src){return new Promise(function(ok,no){if(window.jspdf)return ok();var s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
-function bindPdf(){var b=document.getElementById('pdfg');if(!b)return;b.onclick=function(){b.disabled=true;
+function bindPdf(){var b=document.getElementById('pdfg');if(!b)return;b.onclick=function(){b.disabled=true;ev('pdf',M);
  Promise.all([fetch(F.reportdata).then(function(r){return r.json()}),load(F.jspdf)]).then(function(x){makePdf(x[0]);b.disabled=false}).catch(function(){b.disabled=false;document.getElementById('pdfe').textContent='Der Report konnte gerade nicht erstellt werden. Bitte versuch es gleich noch einmal.'})}}
 function makePdf(R){var T=RT(),k=REG?R.kreis[REG.ks[0]]:null,doc=new window.jspdf.jsPDF({unit:'mm',format:'a4'}),y=20,W=170,SP=T.spalten||['Delikt','Erfasste Fälle 2025','Häufigkeitszahl (je 100.000 Einwohner)','Rang deines Kreises (von '+R.n+')','Bundesschnitt (Häufigkeitszahl)'],
  fmt=function(n){var q=(Math.round(n*10)/10).toFixed(1).split('.');return q[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+q[1]},int=function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'.')};
