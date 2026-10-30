@@ -148,3 +148,6 @@ label.chk input{flex:none;width:22px;height:22px;margin:1px 0 0;accent-color:var
 .gate{position:relative}
 .gate-in{max-height:260px;overflow:hidden;filter:blur(3px);opacity:.55;pointer-events:none;user-select:none;-webkit-mask-image:linear-gradient(#000 20%,transparent);mask-image:linear-gradient(#000 20%,transparent)}
 .gate .wall{margin-top:calc(-1*var(--s8,48px));position:relative}
+#kf input[type=email],#kf input[type=text],#kf textarea{width:100%;min-height:52px;padding:var(--s3,12px) var(--s4);border:1.5px solid var(--sage7);border-radius:var(--r1);background:#fff;font:inherit;color:inherit;margin-bottom:var(--s4)}
+#kf textarea{min-height:140px;resize:vertical}
+#kf input:focus-visible,#kf textarea:focus-visible{border-color:var(--slate)}
