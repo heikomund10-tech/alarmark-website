@@ -86,7 +86,7 @@ function kostenRes(d,id,u){var K=F.kosten,r=K.results[id],rw=K.rows[id]||{},alt=
  g+='<p class="small">Zum Vergleich – '+esc(F.weg_titel[alt])+': '+esc(ca.fj)+'</p>';
  g+='<p><strong>Gut zu wissen:</strong> '+esc(r.erkenntnis)+'</p><p><strong>Deine Prüfpunkte</strong></p>'+ul(r.pruefpunkte);
  h+=gate(g);
- h+='<p class="small">Quelle: '+esc(r.quelle)+'; '+esc(c.q)+'</p><details class="small"><summary>So rechnen wir</summary><p>'+esc(K.transparenz.replace(/^So rechnen wir:\s*/,''))+'</p></details></div>';
+ h+='<details class="small"><summary>So rechnen wir</summary><p>'+esc(K.transparenz.replace(/^So rechnen wir:\s*/,''))+'</p></details></div>';
  if(!WEG0)h+='<p class="small">'+esc(K.region_hinweis)+'.</p><p><a class="btn" href="'+F.base+'/#check">Jetzt Alarm-Check starten</a></p>';
  return h}
 function wt(){var T=F.wall_teaser&&F.wall_teaser[M],W=F.email_schritt[M]||F.email_schritt.alarm;
