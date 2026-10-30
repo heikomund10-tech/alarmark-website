@@ -140,7 +140,8 @@ label.chk input{flex:none;width:22px;height:22px;margin:1px 0 0;accent-color:var
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
 .prose a.btn{color:#fff;text-decoration:none}
 .prose a.btn:hover{color:#fff}
-.dk{background:var(--slate);color:#fff}
+.dk{background:var(--slate);color:#fff;margin-top:var(--s8);padding-bottom:var(--s8)}
+@media (min-width:960px){.dk{margin-top:var(--s9);padding-bottom:var(--s9)}}
 .dk p{color:#E7ECEA}
 .dk :focus-visible{outline-color:#fff}
 .dk h2{color:#fff}
