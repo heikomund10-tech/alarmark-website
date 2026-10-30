@@ -5,7 +5,7 @@
 var F=window.FN,el=document.getElementById('check');if(!F||!el)return;
 var M=F.mode,A={},hist=[],t0=Date.now(),url=new URLSearchParams(location.search);
 var WEG=(url.get('weg')||'').toUpperCase(),U=url.get('u')||'',WF=url.get('wf')||'';if(!/^(SE|SL|PE|PL)$/.test(WEG))WEG='';if(!/^[123]$/.test(U)||!/^[hw]$/.test(WF)||!WEG){U='';WF=''}
-if(M!=='kosten'){WEG='';U='';WF=''}var UNL=false,GATED='',KR0=(function(){try{return M==='kosten'?sessionStorage.getItem('al_kreis'):''}catch(e){return ''}})(),WEG0=WEG,U0=U,WF0=WF,REG=null,PLZ_ON=M==='alarm'&&!!F.plzdata&&!!F.plz,plzDone=false;
+if(M!=='kosten'){WEG='';U='';WF=''}var UNL=false,GATED='',KR0=(function(){try{return M==='kosten'?sessionStorage.getItem('al_kreis'):''}catch(e){return ''}})(),WEG0=WEG,U0=U,WF0=WF,REG=null,PLZ_ON=(M==='alarm'||M==='kosten')&&!!F.plzdata&&!!F.plz,PLZ_SKIP=M==='kosten'&&!!KR0&&/^\d{5}$/.test(KR0),plzDone=false;
 function ev(e,x){try{window.alEv&&window.alEv(e,x)}catch(err){}}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function has(){for(var i=0;i<arguments.length;i++)for(var k in A)if(A[k]===arguments[i])return true;return false}
@@ -13,7 +13,7 @@ function lab(qid){if(qid==='a2')return lab('a2h')||lab('a2w');var q=F.questions.
 function vis(q){var c=q.nur_wenn;return !c||c['in'].indexOf(A[c.q])>-1}
 /* cost check: with ?weg only the scope questions a1-a3 are asked; with ?weg&u none */
 function list(){return F.questions.filter(function(q){if(!vis(q))return false;if(M==='kosten'&&WEG)return !U&&/^a[123]/.test(q.id);return true})}
-function tot(qs){var a2=!A.a1&&qs.some(function(q){return q.id==='a1'})?1:0;return qs.length+a2+(PLZ_ON?1:0)}
+function tot(qs){var a2=!A.a1&&qs.some(function(q){return q.id==='a1'})?1:0;return qs.length+a2+(PLZ_ON&&!PLZ_SKIP?1:0)}
 function score(reg){var s={S:0,P:0,E:0,L:0};list().forEach(function(q){q.optionen.forEach(function(o){if(A[q.id]===o.id)for(var k in o.punkte)s[k]=(s[k]||0)+o.punkte[k]})});if(reg&&REG&&REG.elev)s.P+=2;return s}
 function decide(){if(WEG)return {m:WEG[0],a:WEG[1],tie:false,region:false};
  var s=score(true),s0=score(false),I=s.S-s.P,I0=s0.S-s0.P,D=s.L-s.E,m=I>=1?'S':I<=-1?'P':(F.tie.S.indexOf(A[F.tie.q])>-1?'S':'P');
@@ -29,7 +29,7 @@ function equip(d){var r=[],w=A.a2w,h=A.a2h;
  r.push(d.m==='S'?ar('AR-6').replace(/\.$/,'')+(has('a1b','a1d')?', ohne Bohren.':'.'):has('a1b','a1d')?ar('AR-7'):ar('AR-8'));
  if(d.a==='L')r.push(ar('AR-9'));if(A.a6==='a6b')r.push(ar('AR-10'));if(A.a6==='a6c')r.push(ar('AR-11'));if(A.a6==='a6a')r.push(ar('AR-12'));
  return r.map(fill)}
-function step(scroll){var qs=list(),i=hist.length;if(i>=qs.length){if(PLZ_ON&&!plzDone)return plzStep(qs.length);return result()}var q=qs[i];
+function step(scroll){var qs=list(),i=hist.length;if(i>=qs.length){if(PLZ_ON&&!PLZ_SKIP&&!plzDone)return plzStep(qs.length);return result()}var q=qs[i];
  var h='<div class="qbar"><i style="width:'+Math.round(i/tot(qs)*100)+'%"></i></div><div class="qstep"><span class="small">Frage '+(i+1)+' von '+tot(qs)+'</span><p class="qq">'+esc(q.frage)+'</p>';
  q.optionen.forEach(function(o){h+='<button class="opt" data-o="'+o.id+'" aria-pressed="'+(A[q.id]===o.id)+'">'+esc(o.label)+'</button>'});
  h+='</div><div class="qnav">'+(i?'<button class="lnk" id="bk" type="button">Zurück</button>':'')+'</div>';
@@ -48,7 +48,7 @@ function plzStep(n){var P=F.plz,N=n+1;
  var miss=0;b.onclick=function(){var v=inp.value.trim();if(!/^\d{5}$/.test(v)){o.innerHTML='<p>Bitte gib deine fünfstellige Postleitzahl ein.</p>';return}
   if(typeof F.plzdata==='string'){b.disabled=true;fetch(F.plzdata).then(function(r){return r.json()}).then(function(d){F.plzdata=d;b.disabled=false;b.click()}).catch(function(){b.disabled=false;o.innerHTML='<p>Die Regionaldaten konnten gerade nicht geladen werden. Bitte versuch es gleich noch einmal.</p>'});return}
   var D=F.plzdata,ks=D.plz[v];if(!ks){ev('plz_miss');if(++miss>1){REG=null;plzDone=true;return step(true)}o.innerHTML='<p>'+esc(P.unbekannt.replace(/ oder lass das Feld.*$/,'.'))+'</p>';return}
-  REG={ks:ks,elev:D.kreis[ks[0]].hz>D.bund*1.15};try{sessionStorage.setItem('al_kreis',ks[0])}catch(e){}ev('plz_ok');plzDone=true;step(true)};
+  REG={ks:ks,elev:M==='alarm'&&D.kreis[ks[0]].hz>D.bund*1.15};try{sessionStorage.setItem('al_kreis',ks[0])}catch(e){}ev('plz_ok');plzDone=true;step(true)};
  el.scrollIntoView({block:'start',behavior:'smooth'})}
 function regBox(){if(!REG)return '';var P=F.plz,D=F.plzdata,ks=REG.ks,fmt=function(n){return (Math.round(n*10)/10).toFixed(1).replace('.',',')};
  var k=D.kreis[ks[0]],r=k.hz/D.bund,t=(r<0.85?P.unter:r>1.15?P.ueber:P.um).replace('{kreis}',k.n).replace('{hz_kreis}',fmt(k.hz)).replace('{hz_bund}',fmt(D.bund));
