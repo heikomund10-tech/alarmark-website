@@ -67,7 +67,7 @@ function gate(g){GATED=g;return UNL?g+pdfBox():'<div class="gate" id="gate"><div
 function alarmRes(d,id,u){var r=F.results[id],g='';
  var t=(d.m==='S'&&A.a4==='a4c')||(d.m==='P'&&has('a4a','a4b'))?r.trotz:r.standard;if(d.region)t+=' '+r.region;
  var h='<div class="res"><span class="tag">Dein Ergebnis</span><h3>'+esc(r.titel)+'</h3><p>'+esc(fill(t))+'</p>';
- var c=costRow(id,u);if(c)h+='<p><strong>Deine Kosten über fünf Jahre:</strong> '+esc(c.fj)+'</p>';
+ var c=costRow(id,u);/* Heiko 02.11.2026 (B): Kostenzeile nur noch hinter der Wall */
  h+=regBox();
  g+='<p><strong>Deine Ausstattung</strong> <span class="small">('+esc(lab('a2'))+' · '+esc(lab('a3'))+')</span></p>'+ul(equip(d));
  if(c)g+='<p><strong>Deine Kosten im Detail</strong></p><ul><li>Anschaffung: '+esc(c.an)+'</li><li>Über fünf Jahre: '+esc(c.fj)+'</li></ul>';
