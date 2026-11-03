@@ -5,7 +5,7 @@
 var F=window.FN,el=document.getElementById('check');if(!F||!el)return;
 var M=F.mode,A={},hist=[],t0=Date.now(),url=new URLSearchParams(location.search);
 var WEG=(url.get('weg')||'').toUpperCase(),U=url.get('u')||'',WF=url.get('wf')||'';if(!/^(SE|SL|PE|PL)$/.test(WEG))WEG='';if(!/^[123]$/.test(U)||!/^[hw]$/.test(WF)||!WEG){U='';WF=''}
-if(M!=='kosten'){WEG='';U='';WF=''}var UNL=false,GATED='',KR0=(function(){try{return M==='kosten'?sessionStorage.getItem('al_kreis'):''}catch(e){return ''}})(),WEG0=WEG,U0=U,WF0=WF,REG=null,PLZ_ON=(M==='alarm'||M==='kosten')&&!!F.plzdata&&!!F.plz,PLZ_SKIP=M==='kosten'&&!!KR0&&/^\d{5}$/.test(KR0),plzDone=false;
+if(M!=='kosten'){WEG='';U='';WF=''}var UNL=false,GATED='',KR0=(function(){try{return M==='kosten'?sessionStorage.getItem('al_kreis'):''}catch(e){return ''}})(),WEG0=WEG,U0=U,WF0=WF,REG=null,PLZ_ON=(M==='alarm'||M==='kosten')&&!!F.plzdata&&!!F.plz,PLZ_SKIP=M==='kosten'&&!!KR0&&/^\d{5}$/.test(KR0),plzDone=false,LAND='de',ATCH_ON=M==='alarm'&&!!F.atchdata;/* BL-001 (Heiko 03.11.2026): Österreich/Schweiz nur im Alarm-Check */
 function ev(e,x){try{window.alEv&&window.alEv(e,x)}catch(err){}}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function has(){for(var i=0;i<arguments.length;i++)for(var k in A)if(A[k]===arguments[i])return true;return false}
@@ -41,16 +41,25 @@ function step(scroll){var qs=list(),i=hist.length;if(i>=qs.length){if(PLZ_ON&&!P
 function kopf(){return '<p class="small">'+esc(F.kosten.kopf)+': <strong>'+esc(F.weg_titel[WEG])+'</strong> · <button class="lnk" id="chg" type="button">'+esc(F.kosten.aendern)+'</button></p>'}
 function bindChg(){var ch=document.getElementById('chg');if(ch)ch.onclick=function(){ev('change',M);WEG='';U='';WF='';hist=[];A={};step(true)}}
 function plzStep(n){var P=F.plz,N=n+1;
- el.innerHTML='<div class="qbar"><i style="width:'+Math.round(n/N*100)+'%"></i></div><div class="qstep"><span class="small">Frage '+N+' von '+N+'</span><p class="qq">'+esc(P.ueberschrift)+'</p><label for="plz">'+esc(P.eingabe_label.replace(/\s*\(freiwillig\)/,''))+'</label><input id="plz" type="text" inputmode="numeric" maxlength="5" autocomplete="postal-code"><p class="small">'+esc(P.eingabe_hinweis)+'</p><p><button class="btn" type="button" id="plzb">Ergebnis anzeigen</button></p><div id="plzr" aria-live="polite"></div></div><div class="qnav"><button class="lnk" id="bk" type="button">Zurück</button></div>';
+ el.innerHTML='<div class="qbar"><i style="width:'+Math.round(n/N*100)+'%"></i></div><div class="qstep"><span class="small">Frage '+N+' von '+N+'</span><p class="qq">'+esc(P.ueberschrift)+'</p>'+(ATCH_ON?'<p class="small">'+esc(F.atch_frage||'In welchem Land wohnst du?')+'</p><p id="land">'+[['de','Deutschland'],['at','Österreich'],['ch','Schweiz']].map(function(x){return '<button class="opt" type="button" data-l="'+x[0]+'" aria-pressed="'+(LAND===x[0])+'">'+x[1]+'</button>'}).join('')+'</p>':'')+'<label for="plz">'+esc(P.eingabe_label.replace(/\s*\(freiwillig\)/,''))+'</label><input id="plz" type="text" inputmode="numeric" maxlength="5" autocomplete="postal-code"><p class="small">'+esc(P.eingabe_hinweis)+'</p><p><button class="btn" type="button" id="plzb">Ergebnis anzeigen</button></p><div id="plzr" aria-live="polite"></div></div><div class="qnav"><button class="lnk" id="bk" type="button">Zurück</button></div>';
  var inp=document.getElementById('plz'),b=document.getElementById('plzb'),o=document.getElementById('plzr');
+ [].forEach.call(el.querySelectorAll('#land .opt'),function(x){x.onclick=function(){LAND=x.dataset.l;[].forEach.call(el.querySelectorAll('#land .opt'),function(y){y.setAttribute('aria-pressed',String(y===x))});inp.maxLength=LAND==='de'?5:4;o.innerHTML='';inp.focus()}});inp.maxLength=LAND==='de'?5:4;
  inp.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();b.click()}};
  document.getElementById('bk').onclick=function(){var id=hist.pop();delete A[id];step(true)};
- var miss=0;b.onclick=function(){var v=inp.value.trim();if(!/^\d{5}$/.test(v)){o.innerHTML='<p>Bitte gib deine fünfstellige Postleitzahl ein.</p>';return}
+ var miss=0;b.onclick=function(){var v=inp.value.trim();if(LAND!=='de')return atchLookup(v,inp,b,o);if(!/^\d{5}$/.test(v)){o.innerHTML='<p>Bitte gib deine fünfstellige Postleitzahl ein.</p>';return}
   if(typeof F.plzdata==='string'){b.disabled=true;fetch(F.plzdata).then(function(r){return r.json()}).then(function(d){F.plzdata=d;b.disabled=false;b.click()}).catch(function(){b.disabled=false;o.innerHTML='<p>Die Regionaldaten konnten gerade nicht geladen werden. Bitte versuch es gleich noch einmal.</p>'});return}
   var D=F.plzdata,ks=D.plz[v];if(!ks){ev('plz_miss');if(++miss>1){REG=null;plzDone=true;return step(true)}o.innerHTML='<p>'+esc(P.unbekannt.replace(/ oder lass das Feld.*$/,'.'))+'</p>';return}
   REG={ks:ks,elev:M==='alarm'&&D.kreis[ks[0]].hz>D.bund*1.15};try{sessionStorage.setItem('al_kreis',ks[0])}catch(e){}ev('plz_ok');plzDone=true;step(true)};
  el.scrollIntoView({block:'start',behavior:'smooth'})}
-function regBox(){if(!REG)return '';var P=F.plz,D=F.plzdata,ks=REG.ks,fmt=function(n){return (Math.round(n*10)/10).toFixed(1).replace('.',',')};
+function atchLookup(v,inp,b,o){if(!/^\d{4}$/.test(v)){o.innerHTML='<p>'+esc(F.atch_hinweis_4||'Bitte gib deine vierstellige Postleitzahl ein.')+'</p>';return}
+ if(typeof F.atchdata==='string'){b.disabled=true;fetch(F.atchdata).then(function(r){return r.json()}).then(function(d){F.atchdata=d;b.disabled=false;b.click()}).catch(function(){b.disabled=false;o.innerHTML='<p>Die Regionaldaten konnten gerade nicht geladen werden. Bitte versuch es gleich noch einmal.</p>'});return}
+ var D=F.atchdata[LAND],ks=D.plz[v];if(!ks){ev('plz_miss',LAND);o.innerHTML='<p>'+esc(F.atchdata.alle.unbekannt_at_ch)+'</p>';return}
+ REG={land:LAND,ks:ks,elev:false};ev('plz_ok',LAND);plzDone=true;step(true)}
+function nf(n,dz,ts){var q=(Math.round(n*Math.pow(10,dz))/Math.pow(10,dz)).toFixed(dz).split('.');return q[0].replace(/\B(?=(\d{3})+(?!\d))/g,ts)+(dz?','+q[1]:'')}
+function atchBox(){var D=F.atchdata[REG.land],T=D.texte,k=D.region[REG.ks[0]],r=k.hz/D.land.hz,t=(r<0.85?T.ergebnis_unter:r>1.15?T.ergebnis_ueber:T.ergebnis_um).replace('{region}',k.n).replace('{hz_region}',nf(k.hz,D.dez,D.tsd)).replace('{hz_land}',nf(D.land.hz,D.dez,D.tsd));
+ if(REG.ks.length>1)t=T.zwei_regionen.replace('{region_1}',k.n)+' '+t;
+ return '<div class="plz"><p><strong>'+esc(F.plz.ueberschrift)+'</strong></p><p>'+esc(t)+'</p><p class="small">'+esc(T.grenze)+'</p><p class="small">'+esc(T.quellenzeile)+'</p></div>'}
+function regBox(){if(!REG)return '';if(REG.land)return atchBox();var P=F.plz,D=F.plzdata,ks=REG.ks,fmt=function(n){return (Math.round(n*10)/10).toFixed(1).replace('.',',')};
  var k=D.kreis[ks[0]],r=k.hz/D.bund,t=(r<0.85?P.unter:r>1.15?P.ueber:P.um).replace('{kreis}',k.n).replace('{hz_kreis}',fmt(k.hz)).replace('{hz_bund}',fmt(D.bund));
  if(ks.length>1)t=P.zwei_kreise.replace('{kreis_1}',k.n)+' '+t;
  return '<div class="plz"><p><strong>'+esc(P.ueberschrift)+'</strong></p><p>'+esc(t)+'</p><p class="small">'+esc(P.grenze)+'</p><p class="small">'+esc(P.quellenzeile.replace('{pks_version}',D.version||''))+'</p></div>'}
@@ -67,17 +76,17 @@ function gate(g){GATED=g;return UNL?g+pdfBox():'<div class="gate" id="gate"><div
 function alarmRes(d,id,u){var r=F.results[id],g='';
  var t=(d.m==='S'&&A.a4==='a4c')||(d.m==='P'&&has('a4a','a4b'))?r.trotz:r.standard;if(d.region)t+=' '+r.region;
  var h='<div class="res"><span class="tag">Dein Ergebnis</span><h3>'+esc(r.titel)+'</h3><p>'+esc(fill(t))+'</p>';
- var c=costRow(id,u);/* Heiko 02.11.2026 (B): Kostenzeile nur noch hinter der Wall */
+ var AT=REG&&REG.land,c=AT?null:costRow(id,u);/* Heiko 02.11.2026 (B): Kostenzeile nur noch hinter der Wall; BL-001: AT/CH ohne Kosten (Legal L-ATCH-05) */
  h+=regBox();
  g+='<p><strong>Deine Ausstattung</strong> <span class="small">('+esc(lab('a2'))+' · '+esc(lab('a3'))+')</span></p>'+ul(equip(d));
  if(c)g+='<p><strong>Deine Kosten im Detail</strong></p><ul><li>Anschaffung: '+esc(c.an)+'</li><li>Über fünf Jahre: '+esc(c.fj)+'</li></ul>';
- g+='<p><strong>Gut zu wissen:</strong> '+esc(r.erkenntnis)+'</p>';
- var pp=[r.pp,F.pp_u[u],F.pp_b[A.a6]].filter(Boolean).slice(0,3);g+='<p><strong>Deine Prüfpunkte</strong></p>'+ul(pp);
+ if(!AT||!/€/.test(r.erkenntnis))g+='<p><strong>Gut zu wissen:</strong> '+esc(r.erkenntnis)+'</p>';
+ var pp=[r.pp,F.pp_u[u],AT&&A.a6==='a6b'?'':F.pp_b[A.a6]].filter(Boolean).slice(0,3);g+='<p><strong>Deine Prüfpunkte</strong></p>'+ul(pp);
  var hs=hints(d);if(hs.length)g+='<p><strong>Hinweise</strong></p>'+ul(hs);
  h+=gate(g);
- h+='<p class="small">Quelle: '+esc(r.quelle)+'</p>';
+ if(!AT)h+='<p class="small">Quelle: '+esc(r.quelle)+'</p>';
  h+='<details class="small"><summary>So kommen wir darauf</summary><p>'+esc(F.transparenz.replace(/^So kommen wir darauf:\s*/,''))+'</p></details>';
- h+='<p><a class="btn" href="'+F.base+'/alarmanlage-haus-kosten/?weg='+id+'&u='+u+'&wf='+wf()+'" onclick="window.alEv&&window.alEv(\'cta_kosten\')">'+esc(F.next_button)+'</a></p></div>';
+ if(!AT)h+='<p><a class="btn" href="'+F.base+'/alarmanlage-haus-kosten/?weg='+id+'&u='+u+'&wf='+wf()+'" onclick="window.alEv&&window.alEv(\'cta_kosten\')">'+esc(F.next_button)+'</a></p></div>';
  return h}
 function kostenRes(d,id,u){var K=F.kosten,r=K.results[id],rw=K.rows[id]||{},alt=id[0]+(id[1]==='E'?'L':'E'),c=costRow(id,u),ca=costRow(alt,u),g='';
  var b=(A.a4&&A.a5?fill('Du hast gesagt: „{a4}“ und „{a5}“. '):'')+K.begr[id].replace('{Umfangstext}',K.umfangstext['U'+u]);
@@ -90,7 +99,7 @@ function kostenRes(d,id,u){var K=F.kosten,r=K.results[id],rw=K.rows[id]||{},alt=
  h+='<details class="small"><summary>So rechnen wir</summary><p>'+esc(K.transparenz.replace(/^So rechnen wir:\s*/,''))+'</p></details></div>';
  if(!WEG0)h+='<p class="small">'+esc(K.region_hinweis)+'.</p><p><a class="btn" href="'+F.base+'/#check">Jetzt Alarm-Check starten</a></p>';
  return h}
-function wt(){var T=F.wall_teaser&&F.wall_teaser[M],W=F.email_schritt[M]||F.email_schritt.alarm;
+function wt(){var T=F.wall_teaser&&F.wall_teaser[M],W=F.email_schritt[M]||F.email_schritt.alarm;if(T&&REG&&REG.land)T={ueberschrift:T.ueberschrift,satz:F.atchdata[REG.land].texte.wall_satz,button:T.button};
  return T||{ueberschrift:W.ueberschrift,satz:'Du erhältst die komplette Auswertung plus einen Report zur Gesamtsituation in Deutschland und wie deine Region abschneidet.',button:W.button}}
 function wallForm(){var W=wt(),E=F.email;return '<form class="mail wall" id="wf" novalidate><p><strong>'+esc(W.ueberschrift)+'</strong></p><p>'+esc(W.satz)+'</p><label for="em"><strong>'+esc(E.feld_email)+'</strong></label><input id="em" type="email" autocomplete="email" inputmode="email" required>'+
  '<label class="chk"><input type="checkbox" id="c1"><span>'+md(E.label)+'</span></label><p class="small">'+md(E.detail)+'</p>'+
@@ -100,15 +109,16 @@ function bindWall(id){var f=document.getElementById('wf');if(!f)return;f.onsubmi
  if(!document.getElementById('c1').checked){er.textContent='Dafür brauchen wir dein Häkchen.';return}
  er.textContent='';var b=f.querySelector('button[type=submit]');b.disabled=true;
  /* report in the mail needs the district: only the district key leaves the browser, never the postcode (Heiko 30.10.2026) */
- send({stage:'lead',quiz:M,result:id,u:scope(),wf:wf(),kreis:REG?REG.ks[0]:'',email:em,consent_mail:true,consent_forward:false,plz:'',consent_text_mail:F.email.label+' '+F.email.detail,consent_text_forward:'',hp:document.getElementById('hp').value},function(ok){
+ send({stage:'lead',quiz:M,result:id,u:scope(),wf:wf(),kreis:REG?REG.ks[0]:'',land:REG&&REG.land?REG.land:'de',email:em,consent_mail:true,consent_forward:false,plz:'',consent_text_mail:F.email.label+' '+F.email.detail,consent_text_forward:'',hp:document.getElementById('hp').value},function(ok){
   if(!ok){b.disabled=false;er.textContent='Das hat leider nicht geklappt. Bitte versuch es gleich noch einmal.';return}
   /* PDF only becomes visible after the address was saved (Heiko 30.10.2026) */
   ev('wall_submit',M);UNL=true;var dk=(F.wall_teaser&&F.wall_teaser['danke_'+M])||(F.email_schritt[M]||F.email_schritt.alarm).danke;
   document.getElementById('gate').outerHTML='<p class="small">'+esc(dk)+'</p>'+GATED+pdfBox();bindPdf()})}}
 function RT(){return F.report_texte||{titel:'Report: Kriminalität in Deutschland und in deinem Kreis',titel_deutschland_only:'Report: Kriminalität in Deutschland'}}
-function pdfBox(){var T=RT();return '<div class="plz" id="pdfb"><p><strong>'+esc(REG?T.titel:(T.titel_deutschland_only||T.titel))+'</strong></p><p><button class="btn" type="button" id="pdfg">Report als PDF herunterladen</button></p><p class="err" id="pdfe"></p></div>'}
+function pdfBox(){var T=RT();if(REG&&REG.land)T={titel:F.atchdata[REG.land].texte.report_titel};return '<div class="plz" id="pdfb"><p><strong>'+esc(REG?T.titel:(T.titel_deutschland_only||T.titel))+'</strong></p><p><button class="btn" type="button" id="pdfg">Report als PDF herunterladen</button></p><p class="err" id="pdfe"></p></div>'}
 function load(src){return new Promise(function(ok,no){if(window.jspdf)return ok();var s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
 function bindPdf(){var b=document.getElementById('pdfg');if(!b)return;b.onclick=function(){b.disabled=true;ev('pdf',M);
+ if(REG&&REG.land){load(F.jspdf).then(function(){atchPdf();b.disabled=false}).catch(function(){b.disabled=false;document.getElementById('pdfe').textContent='Der Report konnte gerade nicht erstellt werden. Bitte versuch es gleich noch einmal.'});return}
  Promise.all([fetch(F.reportdata).then(function(r){return r.json()}),load(F.jspdf)]).then(function(x){makePdf(x[0]);b.disabled=false}).catch(function(){b.disabled=false;document.getElementById('pdfe').textContent='Der Report konnte gerade nicht erstellt werden. Bitte versuch es gleich noch einmal.'})}}
 function makePdf(R){var T=RT(),k=REG?R.kreis[REG.ks[0]]:null,doc=new window.jspdf.jsPDF({unit:'mm',format:'a4'}),y=20,W=170,SP=T.spalten||['Delikt','Erfasste Fälle 2025','Häufigkeitszahl (je 100.000 Einwohner)','Rang deines Kreises (von '+R.n+')','Bundesschnitt (Häufigkeitszahl)'],
  fmt=function(n){var q=(Math.round(n*10)/10).toFixed(1).split('.');return q[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+q[1]},int=function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'.')};
@@ -128,6 +138,17 @@ function makePdf(R){var T=RT(),k=REG?R.kreis[REG.ks[0]]:null,doc=new window.jspd
  txt(T.quellenzeile?(k?T.quellenzeile:T.quellenzeile.replace(/\s*PLZ-Zuordnung:.*$/,'')):'Quelle: Polizeiliche Kriminalstatistik, Bundeskriminalamt, Berichtsjahr 2025, Version '+R.version+', Datenlizenz Deutschland – Namensnennung 2.0.',8);
  txt('Alarmark · mark@alarmark.de · Mark ist eine KI-Figur von Alarmark.',8);
  doc.save('Alarmark-Report'+(k?'-'+k[0].replace(/[^A-Za-z0-9ÄÖÜäöüß-]+/g,'-'):'-Deutschland')+'.pdf')}
+function atchPdf(){var D=F.atchdata[REG.land],T=D.texte,k=D.region[REG.ks[0]],doc=new window.jspdf.jsPDF({unit:'mm',format:'a4'}),y=20,W=170;
+ function txt(s,size,bold){doc.setFont('helvetica',bold?'bold':'normal');doc.setFontSize(size);var l=doc.splitTextToSize(String(s||''),W);if(y+l.length*size*0.45>280){doc.addPage();y=20}doc.text(l,20,y);y+=l.length*size*0.45+3}
+ /* BL-001 (Heiko 03.11.2026): AT/CH-Report mit einem Wert je Region und Land, Texte Copywriter 03.11.2026 */
+ txt(T.report_titel,16,true);txt(T.report_einleitung,10);txt((REG.land==='at'?'Dein Bundesland: ':'Dein Kanton: ')+k.n,11,true);
+ var rows=[[k.n,nf(k.f,0,D.tsd),nf(k.hz,D.dez,D.tsd)],[D.land.n,nf(D.land.f,0,D.tsd),nf(D.land.hz,D.dez,D.tsd)]];
+ txt(D.delikt+', Berichtsjahr '+D.jahr,9,true);
+ doc.setFontSize(8);doc.setFont('helvetica','bold');[['Region',20],['Erfasste Fälle',100],['Häufigkeitszahl ('+D.einheit+')',140]].forEach(function(c){doc.text(c[0],c[1],y)});y+=4;doc.line(20,y,190,y);y+=5;
+ doc.setFontSize(9);rows.forEach(function(r,i){doc.setFont('helvetica',i===0?'bold':'normal');if(i===0)doc.setTextColor(169,78,45);doc.text(r[0],20,y);doc.text(r[1],100,y);doc.text(r[2],140,y);doc.setTextColor(0,0,0);y+=6});
+ y+=2;txt(T.report_lesehilfe,9);txt(T.report_grenzen,9);txt(T.land_satz,9);txt(T.quellenzeile,8);
+ txt('Alarmark · mark@alarmark.de · Mark ist eine KI-Figur von Alarmark.',8);
+ doc.save('Alarmark-Report-'+k.n.replace(/[^A-Za-z0-9ÄÖÜäöüß-]+/g,'-')+'.pdf')}
 function mailBox(){var E=F.email;return '<form class="mail" id="mf" novalidate><p><strong>'+esc(E.h||'')+'</strong></p><label for="em"><strong>'+esc(E.feld_email)+'</strong></label><input id="em" type="email" autocomplete="email" inputmode="email" required>'+
  '<label class="chk"><input type="checkbox" id="c1"><span>'+md(E.label)+'</span></label><p class="small">'+md(E.detail)+'</p>'+
  '<input id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"><p class="err" id="er"></p><button class="btn" type="submit">'+esc(E.btn||'Senden')+'</button></form>'}
