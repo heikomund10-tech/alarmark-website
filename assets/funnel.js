@@ -48,12 +48,13 @@ function plzStep(n){var P=F.plz,N=n+1;
  document.getElementById('bk').onclick=function(){var id=hist.pop();delete A[id];step(true)};
  var miss=0;b.onclick=function(){var v=inp.value.trim();if(LAND!=='de')return atchLookup(v,inp,b,o);if(!/^\d{5}$/.test(v)){o.innerHTML='<p>Bitte gib deine fünfstellige Postleitzahl ein.</p>';return}
   if(typeof F.plzdata==='string'){b.disabled=true;fetch(F.plzdata).then(function(r){return r.json()}).then(function(d){F.plzdata=d;b.disabled=false;b.click()}).catch(function(){b.disabled=false;o.innerHTML='<p>Die Regionaldaten konnten gerade nicht geladen werden. Bitte versuch es gleich noch einmal.</p>'});return}
-  var D=F.plzdata,ks=D.plz[v];if(!ks){ev('plz_miss');if(++miss>1){REG=null;plzDone=true;return step(true)}o.innerHTML='<p>'+esc(P.unbekannt.replace(/ oder lass das Feld.*$/,'.'))+'</p>';return}
+  var D=F.plzdata,ks=D.plz[v]||plzNear(D.plz,v);if(!ks){ev('plz_miss');if(++miss>1){REG=null;plzDone=true;return step(true)}o.innerHTML='<p>'+esc(P.unbekannt.replace(/ oder lass das Feld.*$/,'.'))+'</p>';return}
   REG={ks:ks,elev:M==='alarm'&&D.kreis[ks[0]].hz>D.bund*1.15};try{sessionStorage.setItem('al_kreis',ks[0])}catch(e){}ev('plz_ok');plzDone=true;step(true)};
  el.scrollIntoView({block:'start',behavior:'smooth'})}
+function plzNear(P,v){/* Heiko 04.11.2026: unbekannte PLZ (z. B. Postfach-/Großkunden-PLZ wie 10032) über gleiche Anfangsziffern zuordnen, nur wenn eindeutig eine Region */for(var n=v.length-2;n>=v.length-3;n--){var p=v.slice(0,n),s={},c=0;for(var k in P){if(k.slice(0,n)===p){c++;P[k].forEach(function(x){s[x]=1})}}if(c){var u=Object.keys(s);return u.length===1?u:null}}return null}
 function atchLookup(v,inp,b,o){if(!/^\d{4}$/.test(v)){o.innerHTML='<p>'+esc(F.atch_hinweis_4||'Bitte gib deine vierstellige Postleitzahl ein.')+'</p>';return}
  if(typeof F.atchdata==='string'){b.disabled=true;fetch(F.atchdata).then(function(r){return r.json()}).then(function(d){F.atchdata=d;b.disabled=false;b.click()}).catch(function(){b.disabled=false;o.innerHTML='<p>Die Regionaldaten konnten gerade nicht geladen werden. Bitte versuch es gleich noch einmal.</p>'});return}
- var D=F.atchdata[LAND],ks=D.plz[v];if(!ks){ev('plz_miss',LAND);o.innerHTML='<p>'+esc(F.atchdata.alle.unbekannt_at_ch)+'</p>';return}
+ var D=F.atchdata[LAND],ks=D.plz[v]||plzNear(D.plz,v);if(!ks){ev('plz_miss',LAND);o.innerHTML='<p>'+esc(F.atchdata.alle.unbekannt_at_ch)+'</p>';return}
  REG={land:LAND,ks:ks,elev:false};ev('plz_ok',LAND);plzDone=true;step(true)}
 function nf(n,dz,ts){var q=(Math.round(n*Math.pow(10,dz))/Math.pow(10,dz)).toFixed(dz).split('.');return q[0].replace(/\B(?=(\d{3})+(?!\d))/g,ts)+(dz?','+q[1]:'')}
 function atchBox(){var D=F.atchdata[REG.land],T=D.texte,k=D.region[REG.ks[0]],r=k.hz/D.land.hz,t=(r<0.85?T.ergebnis_unter:r>1.15?T.ergebnis_ueber:T.ergebnis_um).replace('{region}',k.n).replace('{hz_region}',nf(k.hz,D.dez,D.tsd)).replace('{hz_land}',nf(D.land.hz,D.dez,D.tsd));
