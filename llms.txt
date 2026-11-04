@@ -8,23 +8,31 @@ Alarmark ist für dich kostenlos. Wir geben deine Daten nicht weiter und bekomme
 
 - [Alarmanlage fürs Haus: der 1-Minuten-Check | Alarmark](https://alarmark.de/): Haus oder Wohnung, Selbstmontage oder Fachbetrieb: Finde in einer Minute heraus, welche Alarmanlage zu dir passt. Kostenlos, ohne Anmeldung.
 - [Alarmanlage Haus: Kosten der 3 Lösungswege über 5 Jahre](https://alarmark.de/alarmanlage-haus-kosten/): Was kostet eine Alarmanlage fürs Haus? Selbstbau, Fachbetrieb und Abo: einmalige und laufende Kosten über 5 Jahre. Preisspannen mit Quelle und Stand.
+- [Methodik und Quellen – woher die Zahlen kommen | Alarmark](https://alarmark.de/methodik/): Woher stammen die Einbruchszahlen und Kostenspannen von Alarmark? Quellen, Einheiten, Stand und Grenzen – und so arbeitet der Alarm-Check.
 
-- [Methodik und Quellen | Alarmark](https://alarmark.de/methodik/): Woher die Einbruchszahlen (DE, AT, CH) und Kostenspannen stammen, Einheiten, Stand und Grenzen.
-
-## Häufige Fragen: Alarm-Check
+## Häufige Fragen: Welche Alarmanlage passt zu deinem Zuhause?
 
 - **Welche Alarmanlage passt zu mir?** Das hängt davon ab, wie du wohnst und was dir wichtig ist. Möchtest du selbst einbauen oder Profis beauftragen? Wer soll im Alarmfall reagieren? Unser 1-Minuten-Check hilft dir, diese Fragen einzuordnen.
 - **Mit welchen Kosten muss ich rechnen?** Neben der Alarmanlage selbst können Kosten für Installation, Wartung und laufende Leistungen entstehen. Wir zeigen dir, wie du diese Kosten über fünf Jahre vergleichst, damit du Angebote besser einschätzen kannst.
 - **Muss ich meine E-Mail-Adresse angeben?** Nein, für deinen Lösungsweg mit Begründung und die regionale Einordnung brauchst du keine E-Mail-Adresse. Möchtest du auch Ausstattung, Kosten über fünf Jahre, Prüfpunkte und den Regionen-Report erhalten, kannst du eine einmalige Ergebnis-Mail anfordern.
 - **Ist der Alarm-Check wirklich kostenlos?** Ja. Der Check und die einmalige Ergebnis-Mail sind kostenlos. Zum Start werden deine Daten nicht an Fachbetriebe weitergegeben; du gehst keine Kaufverpflichtung ein.
 
-## Häufige Fragen: Kosten
+## Häufige Fragen: Was kostet deine Alarmanlage über fünf Jahre?
 
 - **Was kostet eine gute Alarmanlage für ein Haus?** Ein Set zum Selbsteinbauen liegt bei ca. 100–1.650 €, eine Funkanlage vom Fachbetrieb bei ca. 1.800–6.500 € inklusive Montage. Gut ist die Anlage, die zu deinen Anforderungen passt – nicht automatisch die teuerste.
 - **Was kostet eine Alarmanlage laufend im Monat?** Mit Leitstelle zahlst du meist ca. 20–50 € im Monat. Beim Fachbetrieb kommt die Wartung mit ca. 100–300 € im Jahr dazu. Beim Selbsteinbau prüfst du am besten vor dem Kauf, ob App-Funktionen etwas kosten.
 - **Was ist über fünf Jahre günstiger?** Das hängt davon ab, welche Leistungen enthalten sind. Vergleiche die Gesamtkosten über fünf Jahre und achte darauf, dass die Angebote auch inhaltlich vergleichbar sind.
 - **Funk oder Kabel?** Funk lässt sich meist ohne Stemmen nachrüsten, Kabel passt gut zu Neubau oder Sanierung. Entscheidend ist, ob bei dir gerade gebaut wird.
 - **Welche Kosten vergisst man leicht?** Leicht übersehen werden mechanischer Schutz für Türen und Fenster, die Wartung, mögliche Gebühren bei Fehlalarm und Vertragsdetails wie Laufzeit oder Einsatzkosten. Frag diese Punkte bei jedem Angebot ab.
+
+## Häufige Fragen: Woher unsere Zahlen kommen. Und was sie zeigen.
+
+- **Woher stammen die Einbruchszahlen für Deutschland?** Aus der Polizeilichen Kriminalstatistik des Bundeskriminalamts, Berichtsjahr 2025, Version 1.1 vom 01.04.2026. Gezählt werden Wohnungseinbrüche einschließlich Versuchen je 100.000 Einwohner für alle 400 Kreise und kreisfreien Städte.
+- **Was sagt die Zahl zu meiner Postleitzahl über mein Zuhause?** Sie beschreibt die Lage in deinem Kreis, Bundesland oder Kanton, nicht das Risiko für dein Haus. Für dein Zuhause zählen Dinge, die du selbst prüfen kannst, etwa Türen, Fenster und wer im Alarmfall reagiert.
+- **Warum zeigt Alarmark für Österreich keine Einbruchszahl?** Für die einzelnen Bundesländer liegt keine Einbruchszahl vor. Deshalb zeigen wir die Straftaten insgesamt je Bundesland aus dem Kriminalitätsbericht 2025 – also die Gesamtkriminalität.
+- **Für welches Land gelten die Kostenspannen?** Nur für Deutschland, mit Stand 2026. Sie sind Orientierungswerte aus Ratgebern, Anbieterseiten, Polizei-Hinweisen und Fachartikeln und kein Angebot.
+- **Bekommt Alarmark Geld von Herstellern oder Fachbetrieben?** Derzeit nicht. Alarmark ist kostenlos und gibt deine Daten nicht weiter.
+- **Wie oft werden die Daten aktualisiert?** Sobald eine neue Statistik erscheint. Die Polizeiliche Kriminalstatistik für Deutschland kommt einmal im Jahr im Frühjahr.
 
 ## Rechtliches
 
