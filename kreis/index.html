@@ -49,10 +49,11 @@ function card(){var T=C.t,we=K[1],twe=K[2],n=K[0];
  ev('result','kreis');ev('wall_view','kreis');bind();document.getElementById('card').scrollIntoView({block:'start',behavior:'smooth'})}
 function wall(){var T=C.t,E=C.em;return '<form class="wall" id="wf" novalidate><p><strong>'+esc(T.WALL_TITEL)+'</strong></p><p>'+esc(T.WALL_EMAIL_CTA)+'</p>'+
  '<label for="em"><strong>'+esc(T.WALL_EMAIL_LABEL)+'</strong></label><input id="em" type="email" autocomplete="email" inputmode="email" required>'+
- '<p>'+esc(T.WALL_NUTZEN_EINLEITUNG)+'</p><ul>'+T.WALL_NUTZEN.split(' | ').map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>'+
  '<label class="chk"><input type="checkbox" id="c1"><span>'+C.lab+'</span></label><p class="small">'+C.det+'</p>'+
  '<input id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"><p class="err" id="er"></p>'+
- '<button class="btn" type="submit">'+esc(T.WALL_BUTTON)+'</button><p class="small">'+esc(T.WALL_MIKROTEXT)+'</p></form>'}
+ '<button class="btn" type="submit">'+esc(T.WALL_BUTTON)+'</button>'+
+ '<p>'+esc(T.WALL_NUTZEN_EINLEITUNG)+'</p><ul>'+T.WALL_NUTZEN.split(' | ').map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>'+
+ '<p class="small">'+esc(T.WALL_MIKROTEXT)+'</p></form>'}
 function bind(){var w=document.getElementById('wf');w.onsubmit=function(e){e.preventDefault();var em=document.getElementById('em').value.trim(),er=document.getElementById('er');
  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){er.textContent='Bitte prüf deine E-Mail-Adresse.';return}
  if(!document.getElementById('c1').checked){er.textContent='Dafür brauchen wir dein Häkchen.';return}
