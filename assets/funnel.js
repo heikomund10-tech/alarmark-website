@@ -5,7 +5,7 @@
 var F=window.FN,el=document.getElementById('check');if(!F||!el)return;
 var M=F.mode,A={},hist=[],t0=Date.now(),url=new URLSearchParams(location.search);
 var WEG=(url.get('weg')||'').toUpperCase(),U=url.get('u')||'',WF=url.get('wf')||'';if(!/^(SE|SL|PE|PL)$/.test(WEG))WEG='';if(!/^[123]$/.test(U)||!/^[hw]$/.test(WF)||!WEG){U='';WF=''}
-if(M!=='kosten'){WEG='';U='';WF=''}var UNL=false,GATED='',KR0=(function(){try{return M==='kosten'?sessionStorage.getItem('al_kreis'):''}catch(e){return ''}})(),WEG0=WEG,U0=U,WF0=WF,REG=null,PLZ_ON=(M==='alarm'||M==='kosten')&&!!F.plzdata&&!!F.plz,PLZ_SKIP=M==='kosten'&&!!KR0&&/^\d{5}$/.test(KR0),plzDone=false,LAND='de',ATCH_ON=M==='alarm'&&!!F.atchdata;/* BL-001 (Heiko 03.11.2026): Österreich/Schweiz nur im Alarm-Check */
+if(M!=='kosten'){WEG='';U='';WF=''}var UNL=false,GATED='',KR0=(function(){try{return M==='kosten'?sessionStorage.getItem('al_kreis'):''}catch(e){return ''}})(),WEG0=WEG,U0=U,WF0=WF,REG=null,PLZ_ON=(M==='alarm'||M==='kosten')&&!!F.plzdata&&!!F.plz,PLZ_SKIP=M==='kosten'&&!!KR0&&/^\d{5}$/.test(KR0),plzDone=false,LAND='de',ATCH_ON=M==='alarm'&&!!F.atchdata;/* BL-001 (Heiko 03.11.2026): Österreich/Schweiz nur im Schnell-Check */
 function ev(e,x){try{window.alEv&&window.alEv(e,x)}catch(err){}}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function has(){for(var i=0;i<arguments.length;i++)for(var k in A)if(A[k]===arguments[i])return true;return false}
@@ -98,7 +98,7 @@ function kostenRes(d,id,u){var K=F.kosten,r=K.results[id],rw=K.rows[id]||{},alt=
  g+='<p><strong>Gut zu wissen:</strong> '+esc(r.erkenntnis)+'</p><p><strong>Deine Prüfpunkte</strong></p>'+ul(r.pruefpunkte);
  h+=gate(g);
  h+='<details class="small"><summary>So rechnen wir</summary><p>'+esc(K.transparenz.replace(/^So rechnen wir:\s*/,''))+'</p></details></div>';
- if(!WEG0)h+='<p class="small">'+esc(K.region_hinweis)+'.</p><p><a class="btn" href="'+F.base+'/#check">Jetzt Alarm-Check starten</a></p>';
+ if(!WEG0)h+='<p class="small">'+esc(K.region_hinweis)+'.</p><p><a class="btn" href="'+F.base+'/#check">Jetzt Schnell-Check starten</a></p>';
  return h}
 function wt(){var T=F.wall_teaser&&F.wall_teaser[M],W=F.email_schritt[M]||F.email_schritt.alarm;if(T&&REG&&REG.land)T={ueberschrift:T.ueberschrift,satz:F.atchdata[REG.land].texte.wall_satz,button:T.button};
  return T||{ueberschrift:W.ueberschrift,satz:'Du erhältst die komplette Auswertung plus einen Report zur Gesamtsituation in Deutschland und wie deine Region abschneidet.',button:W.button}}
